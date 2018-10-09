@@ -20,9 +20,10 @@ build_script:
   - cd openSSL
   - perl Configure VC-WIN64A
   - nmake
+  - nmake install
   # Build Qt
   - cd C:\projects\Qt
-  - .\configure.bat -release -opensource -confirm-license -opengl dynamic -platform win32-msvc2015 -openssl -IC:\projects\openSSL\openSSL-release\include -LC:\projects\openSSL\openSSL-release\lib -nomake examples -nomake tests -no-direct2d
+  - .\configure.bat -release -opensource -confirm-license -opengl dynamic -platform win32-msvc2015 -openssl "-IC:\Program Files\openSSL\include" "-LC:\Program Files\openSSL\lib" -nomake examples -nomake tests -no-direct2d
   # start compiling
   - where nmake
   - nmake
