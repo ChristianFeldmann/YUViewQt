@@ -11,6 +11,14 @@ install:
   - start /wait nasminst.exe /S
   - ps: $env:path="C:\Program Files\NASM;$($env:path)"
   - where nasm
+  # Get bison and flex, unzip it, rename it and add it to PATH
+  - curl -L -o winflexbison.zip https://github.com/lexxmark/winflexbison/releases/download/v2.5.16/winflexbison-2.5.16.zip
+  - 7z e winflexbison.zip -owinflexbison
+  - cd winflexbison
+  - copy win_flex.exe flex.exe
+  - copy win_bison.exe bison.exe
+  - cd ..
+  - ps: $env:path="C:\projects\winflexbison;$($env:path)"
   # Get Qt and openSSL
   - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt --depth 1
   - git clone --single-branch -b OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git openSSL --depth 1
