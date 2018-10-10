@@ -6,6 +6,11 @@ clone_folder: C:\projects
 install:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   - cd C:\projects
+  # Get nasm, install it and add it to the path
+  - curl -L -o nasminst.exe https://www.nasm.us/pub/nasm/releasebuilds/2.14rc15/win64/nasm-2.14rc15-installer-x64.exe
+  - start /wait nasminst.exe /S
+  - ps: $env:path="C:\Program Files\NASM;$($env:path)"
+  - where nasm
   # Get openSSL
   - git clone --single-branch -b OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git openSSL --depth 1
 
