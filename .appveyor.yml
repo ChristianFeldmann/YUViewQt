@@ -19,18 +19,19 @@ build_script:
   - cd openSSL
   - perl Configure VC-WIN64A
   - nmake
+  - cd ..
 
 after_build:
-  - ls
+  # Pack the openSSL files into a zip
+  - 7z a openSSL_1_1_1_stable.zip openssl/include openSSL/libcrypto-1_1-x64.dll opensSSL/libcrypto.lib openSSL/libssl-1_1-x64.dll openSSL/libssl.lib
 
 artifacts:
-  - path: openSSL/libcrypto-1_1-x64.dll
-  - path: openSSL/libssl-1_1-x64.dll
+  - path: openSSL_1_1_1_stable.zip
 
 deploy:
   provider: GitHub
   auth_token:
     secure: boWJ9aVfVBpOkBGzWF5yS5/Os3eDUjFfziOY04+LNA+7v+PnMFBtHeMJe2PjK4gm
-  artifact: openSSL/libcrypto-1_1-x64.dll,openSSL/libssl-1_1-x64.dll
+  artifact: openSSL_1_1_1_stable.zip
   on:
     appveyor_repo_tag: true
