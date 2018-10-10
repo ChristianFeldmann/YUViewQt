@@ -22,3 +22,15 @@ build_script:
 
 after_build:
   - ls
+
+artifacts:
+  - path: openSSL/libcrypto-1_1-x64.dll
+  - path: openSSL/libssl-1_1-x64.dll
+
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: boWJ9aVfVBpOkBGzWF5yS5/Os3eDUjFfziOY04+LNA+7v+PnMFBtHeMJe2PjK4gm
+  artifact: openSSL/libcrypto-1_1-x64.dll,openSSL/libssl-1_1-x64.dll
+  on:
+    appveyor_repo_tag: true
