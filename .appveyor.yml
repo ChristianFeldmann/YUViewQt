@@ -21,16 +21,32 @@ install:
   # Get the precompiled openSSL libraries
   - curl -L -o openSSL.zip https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1/openSSL_1_1_1_stable.zip
   - 7z x openSSL.zip
-  # Get Qt
-  - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt --depth 1
+  # Get Qt into a folder in which we build it
+  - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt_build --depth 1
 
 build_script:
   # Build Qt
   - cd C:\projects\Qt
-  - .\configure.bat -release -opensource -confirm-license -opengl dynamic -platform win32-msvc2015 -openssl "-IC:\projects\openSSL\include" "-LC:\projects\openSSL\lib" -nomake examples -nomake tests -no-direct2d
+  - .\configure.bat -release -opensource -confirm-license -prefix "C:\projects\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-IC:\projects\openSSL\include" "-LC:\projects\openSSL" -nomake examples -nomake tests -no-direct2d
   - where nmake
   - where jom
-  # - jom
+  - jom
+  # Install Qt to "C:\projects\Qt"
+  - jom install
+  - cd ..
 
 after_build:
-  
+  # Pack all the libraries, dlls and include files into one zip
+  - cd "C:\projects\"
+  - 7z Qt-5.11.zip Qt/bin Qt/include Qt/mkspecs
+
+artifacts:
+  - path: Qt-5.11.zip
+
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: boWJ9aVfVBpOkBGzWF5yS5/Os3eDUjFfziOY04+LNA+7v+PnMFBtHeMJe2PjK4gm
+  artifact: Qt-5.11.zip
+  on:
+    appveyor_repo_tag: true
