@@ -25,11 +25,6 @@ install:
   - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt --depth 1
 
 build_script:
-  # Build openssl
-  - cd openSSL
-  - perl Configure VC-WIN64A
-  - nmake
-  - nmake install
   # Build Qt
   - cd C:\projects\Qt
   - .\configure.bat -release -opensource -confirm-license -opengl dynamic -platform win32-msvc2015 -openssl "-IC:\projects\openSSL\include" "-LC:\projects\openSSL\lib" -nomake examples -nomake tests -no-direct2d
