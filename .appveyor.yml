@@ -23,7 +23,7 @@ build_script:
 
 after_build:
   # Pack the openSSL files into a zip
-  - 7z a openSSL_1_1_1_stable.zip openssl/include openSSL/libcrypto-1_1-x64.dll opensSSL/libcrypto.lib openSSL/libssl-1_1-x64.dll openSSL/libssl.lib
+  - 7z a openSSL_1_1_1_stable.zip openssl/include openSSL/libcrypto-1_1-x64.dll openSSL/libcrypto.lib openSSL/libssl-1_1-x64.dll openSSL/libssl.lib
 
 artifacts:
   - path: openSSL_1_1_1_stable.zip
