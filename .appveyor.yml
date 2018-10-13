@@ -6,11 +6,6 @@ clone_folder: C:\projects
 install:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   - cd C:\projects
-  # Get nasm, install it and add it to the path
-  - curl -L -o nasminst.exe https://www.nasm.us/pub/nasm/releasebuilds/2.14rc15/win64/nasm-2.14rc15-installer-x64.exe
-  - start /wait nasminst.exe /S
-  - ps: $env:path="C:\Program Files\NASM;$($env:path)"
-  - where nasm
   # Get bison and flex, unzip it, rename it and add it to PATH
   - curl -L -o winflexbison.zip https://github.com/lexxmark/winflexbison/releases/download/v2.5.16/winflexbison-2.5.16.zip
   - 7z x winflexbison.zip -owinflexbison
@@ -23,9 +18,11 @@ install:
   - curl -L -o jom.zip http://download.qt.io/official_releases/jom/jom.zip
   - 7z x jom.zip -ojom
   - ps: $env:path="C:\projects\jom;$($env:path)"
-  # Get Qt and openSSL
+  # Get the precompiled openSSL libraries
+  - curl -L -o openSSL.zip https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1/openSSL_1_1_1_stable.zip
+  - 7z x openSSL.zip
+  # Get Qt
   - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt --depth 1
-  - git clone --single-branch -b OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git openSSL --depth 1
 
 build_script:
   # Build openssl
@@ -35,10 +32,10 @@ build_script:
   - nmake install
   # Build Qt
   - cd C:\projects\Qt
-  - .\configure.bat -release -opensource -confirm-license -opengl dynamic -platform win32-msvc2015 -openssl "-IC:\Program Files\openSSL\include" "-LC:\Program Files\openSSL\lib" -nomake examples -nomake tests -no-direct2d
+  - .\configure.bat -release -opensource -confirm-license -opengl dynamic -platform win32-msvc2015 -openssl "-IC:\projects\openSSL\include" "-LC:\projects\openSSL\lib" -nomake examples -nomake tests -no-direct2d
   - where nmake
   - where jom
-  - jom
+  # - jom
 
 after_build:
   
