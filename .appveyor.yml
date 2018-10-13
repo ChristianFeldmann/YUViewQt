@@ -26,7 +26,7 @@ install:
 
 build_script:
   # Build Qt
-  - cd C:\projects\Qt
+  - cd C:\projects\Qt_build
   - .\configure.bat -release -opensource -confirm-license -prefix "C:\projects\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-IC:\projects\openSSL\include" "-LC:\projects\openSSL" -nomake examples -nomake tests -no-direct2d
   - where nmake
   - where jom
@@ -37,7 +37,7 @@ build_script:
 
 after_build:
   # Pack all the libraries, dlls and include files into one zip
-  - cd "C:\projects\"
+  - cd C:\projects
   - 7z Qt-5.11.zip Qt/bin Qt/include Qt/mkspecs
 
 artifacts:
