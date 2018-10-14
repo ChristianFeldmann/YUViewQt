@@ -11,12 +11,12 @@ install:
   - 7z x Qt.zip
   - ps: $env:path="C:\projects\Qt;C:\projects\Qt\bin;$($env:path)"
   - cd
-  # Checkout Qttools
-  - git clone --single-branch -b 5.11 https://github.com/qt/qttools.git Qttools --depth 1
+  # Checkout QtCharts
+  - git clone --single-branch -b 5.11 https://github.com/qt/qtcharts.git QtCharts --depth 1
   
 build_script:
   # Build the tools
-  - cd C:\projects\Qttools
+  - cd C:\projects\QtCharts
   - qmake
   - where nmake
   - nmake
@@ -26,15 +26,15 @@ build_script:
 after_build:
   # Pack all the libraries, dlls and include files into one zip
   - cd C:\projects
-  - 7z a Qt-5.11-Tools.zip Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs
+  - 7z a Qt-5.11-Charts.zip QtCharts/bin QtCharts/lib QtCharts/include QtCharts/mkspecs
   
 artifacts:
-  - path: Qt-5.11-Tools.zip
+  - path: Qt-5.11-Charts.zip
 
 deploy:
   provider: GitHub
   auth_token:
     secure: boWJ9aVfVBpOkBGzWF5yS5/Os3eDUjFfziOY04+LNA+7v+PnMFBtHeMJe2PjK4gm
-  artifact: Qt-5.11-Tools.zip
+  artifact: Qt-5.11-Charts.zip
   on:
     appveyor_repo_tag: true
