@@ -21,6 +21,20 @@ build_script:
   - where nmake
   - nmake
   - ls
+  - cd ..
 
 after_build:
+  # Pack all the libraries, dlls and include files into one zip
+  - cd C:\projects
+  - 7z a Qt-5.11-Tools.zip Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs
   
+artifacts:
+  - path: Qt-5.11-Tools.zip
+
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: boWJ9aVfVBpOkBGzWF5yS5/Os3eDUjFfziOY04+LNA+7v+PnMFBtHeMJe2PjK4gm
+  artifact: Qt-5.11-Tools.zip
+  on:
+    appveyor_repo_tag: true
