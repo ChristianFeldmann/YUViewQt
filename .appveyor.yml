@@ -38,7 +38,7 @@ build_script:
 after_build:
   # Pack all the libraries, dlls and include files into one zip
   - cd C:\projects
-  - 7z a Qt-5.11.zip Qt/bin Qt/include Qt/mkspecs
+  - 7z a Qt-5.11.zip Qt/bin Qt/lib Qt/include Qt/mkspecs
 
 artifacts:
   - path: Qt-5.11.zip
