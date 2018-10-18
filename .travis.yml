@@ -9,7 +9,7 @@ script:
 - pwd
 # Get Qt into a folder in which we build it
 - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt_build --depth 1
-- ls
+- ls 
 
 before_deploy:
   # - if [ "$TRAVIS_OS_NAME" = "linux" ]; then mv lib/liblibHMDecoderStatic.so lib/libHMDecoder.so; fi
