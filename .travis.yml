@@ -2,14 +2,18 @@ language: cpp
 matrix:
   include:
     - os: osx
-      env: DEPLOY_FILE=lib/libHMDecoder.dylib
+      #env: DEPLOY_FILE=lib/libHMDecoder.dylib
 compiler:
 - gcc
-script:
-- pwd
+
+install:
 # Get Qt into a folder in which we build it
 - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt_build --depth 1
-- ls 
+
+script:
+- cd Qt_build
+- ./configure -release -opensource -confirm-license -prefix "C:\projects\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-IC:\projects\openSSL\include" "-LC:\projects\openSSL" -nomake examples -nomake tests -no-direct2d
+- ls
 
 before_deploy:
   # - if [ "$TRAVIS_OS_NAME" = "linux" ]; then mv lib/liblibHMDecoderStatic.so lib/libHMDecoder.so; fi
