@@ -10,7 +10,7 @@ install:
 # Get the precompiled openssl libraries
 - curl https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1/openSSL_1_1_1_stable_mac.zip -o openSSL.zip
 - ls
-- unzip openSSL.zip
+- unzip -a openSSL.zip
 - ls
 # Get Qt into a folder in which we build it
 - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt_build --depth 1
