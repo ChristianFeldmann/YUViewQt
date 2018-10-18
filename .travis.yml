@@ -8,7 +8,7 @@ compiler:
 
 install:
 # Get the precompiled openssl libraries
-- curl https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1/openSSL_1_1_1_stable_mac.zip -o openSSL.zip
+- curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1/openSSL_1_1_1_stable_mac.zip -o openSSL.zip
 - ls -l
 - unzip -a openSSL.zip
 - ls
