@@ -17,7 +17,7 @@ install:
 
 script:
 - cd Qt_build
-- ./configure -release -opensource -openssl -I ../openSSL/include/ -L ../openSSL/lib/ -nomake examples
+- ./configure -release -opensource -confirm-license -openssl -I ../openSSL/include/ -L ../openSSL/lib/ -nomake examples
 - ls
 
 before_deploy:
