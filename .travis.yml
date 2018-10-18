@@ -7,7 +7,7 @@ compiler:
 install:
 - git clone --single-branch -b OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git
   openSSL --depth 1
-  
+
 script:
 - cd openSSL
 - mkdir dist
@@ -17,7 +17,7 @@ script:
 - ls
 - cd ..
 
-before_deploy:
+after_success:
 - zip -r openSSL_1_1_1_stable_mac.zip openSSL/include openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib
 
 deploy:
