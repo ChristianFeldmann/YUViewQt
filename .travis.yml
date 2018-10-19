@@ -12,6 +12,8 @@ install:
 - ls -l
 - unzip -a openSSL.zip
 - ls
+- pwd
+- cd openSSL
 - ls /Users/travis/build/ChristianFeldmann/openSSL/include/openssl/opensslv.h
 - ls /Users/travis/build/ChristianFeldmann/openSSL
 # Get Qt into a folder in which we build it
