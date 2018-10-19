@@ -15,7 +15,6 @@ install:
   - git clone --single-branch -b 5.11 https://github.com/qt/qtcharts.git QtCharts --depth 1
   
 build_script:
-  # Build the tools
   - cd C:\projects\QtCharts
   - qmake
   - where nmake

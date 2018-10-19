@@ -1,0 +1,35 @@
+language: cpp
+matrix:
+  include:
+    - os: osx
+      #env: DEPLOY_FILE=lib/libHMDecoder.dylib
+compiler:
+- gcc
+
+install:
+# Get the precompiled Qt libraries
+- curl -L ... -o Qt.zip
+- unzip -a Qt.zip
+# Get QtCharts
+- git clone --single-branch -b 5.11 https://github.com/qt/qtcharts.git QtCharts --depth 1
+- ls
+
+script:
+- cd QtCharts
+- ../Qt/bin/qmake
+- make
+- cd ..
+
+before_deploy:
+# Zip the QtCharts folder
+- zip -r QtCharts-5.11_mac.zip QtCharts
+
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: kz5qfB8zuzBc7rm3u5aHB5oilKWhduGne731/7sNCgYk+QJ6ALrdgXBSwf9QQcvntUJqtm5R+LxK8ulplrfShlLXE5HR+hZDw4MEkrhYvfF4GPtV/YcxeBKYMKJXYmuBv7K22icCPXhcXnsYr8g8/eAyeUmhFL6dia2z2524NVNcLUKBjKo4U55Ann0dSfWb49xQw39oSjLNWBBICoKQsazRKLTC7uucryQO7eYSmb/jPfZ3G5O7/T4BQp85fkyC1xCH21jEypTeaMVzE/Ha0wb5JvC2wQc2YJwZqumqAbghksV5Ydi59/ZX2D2TqauCyu/dQP9fsP503sWZaxuBLgbaWT8pGmk3SaydX00yE/D0fYI99igQSvxACxP07QR6Uvc8Pi5YTQaLAWKa0JpZ3Np5pXEYCtBaTnQqNDNr6JgiQ9zGqXeCd7/ZghLfOLcYeWi1okqnlDk15RdhAKJIbX/CkVnYYG7xPrTwN3aksTQm9bsY4EbzgD8SVLWROqgs6bmUHlWOjKXT2ve+GWkfL41lOp8A1lCRaFtfjTVMD5f7xUzaaGIe+PD+g4CXoEMsa4Cqd7s6E8RoZZ/HN3427ybrH97nUtqoSorNM+Z3Ig5mDzOVUt64UxeWxTjKvN17iBPjQZV4XjFWtaSpdDsyBYTm/ihuegHhydACji857MU=
+  file: Qt-5.11_mac.zip
+  on:
+    repo: ChristianFeldmann/YUViewQt
+    tags: true
