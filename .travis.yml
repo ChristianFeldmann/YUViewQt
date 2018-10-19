@@ -12,6 +12,8 @@ install:
 - ls -l
 - unzip -a openSSL.zip
 - ls
+- ls /Users/travis/build/ChristianFeldmann/openSSL/include/openssl/opensslv.h
+- ls /Users/travis/build/ChristianFeldmann/openSSL
 # Get Qt into a folder in which we build it
 - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt_build --depth 1
 
