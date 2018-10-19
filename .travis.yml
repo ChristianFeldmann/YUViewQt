@@ -9,20 +9,16 @@ compiler:
 install:
 # Get the precompiled openssl libraries
 - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1/openSSL_1_1_1_stable_mac.zip -o openSSL.zip
-- ls -l
 - unzip -a openSSL.zip
-- ls
-- pwd
-- cd openSSL
-- ls /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/include/openssl/opensslv.h
-- ls /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL
 # Get Qt into a folder in which we build it
 - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt_build --depth 1
 
 script:
 - cd Qt_build
-- ./configure -release -opensource -confirm-license -openssl -I /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/include/ -L /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/ -nomake examples
-- cat config.log
+- ./configure -release -opensource -confirm-license -prefix ../Qt -openssl -I /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/include/ -L /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/ -nomake examples
+- make
+- make install
+- cd ..
 
 before_deploy:
   # - if [ "$TRAVIS_OS_NAME" = "linux" ]; then mv lib/liblibHMDecoderStatic.so lib/libHMDecoder.so; fi
