@@ -14,14 +14,14 @@ install:
 - ls
 - pwd
 - cd openSSL
-- ls /Users/travis/build/ChristianFeldmann/openSSL/include/openssl/opensslv.h
-- ls /Users/travis/build/ChristianFeldmann/openSSL
+- ls /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/include/openssl/opensslv.h
+- ls /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL
 # Get Qt into a folder in which we build it
 - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt_build --depth 1
 
 script:
 - cd Qt_build
-- ./configure -release -opensource -confirm-license -openssl -I /Users/travis/build/ChristianFeldmann/openSSL/include/ -L /Users/travis/build/ChristianFeldmann/openSSL/ -nomake examples
+- ./configure -release -opensource -confirm-license -openssl -I /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/include/ -L /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/ -nomake examples
 - cat config.log
 
 before_deploy:
