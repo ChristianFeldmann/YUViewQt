@@ -17,8 +17,8 @@ install:
 
 script:
 - cd Qt_build
-- ./configure -release -opensource -confirm-license -openssl -I ../openSSL/include/ -L ../openSSL/lib/ -nomake examples
-- ls
+- ./configure -release -opensource -confirm-license -openssl -I ../openSSL/include -L ../openSSL -nomake examples
+- cat config.log
 
 before_deploy:
   # - if [ "$TRAVIS_OS_NAME" = "linux" ]; then mv lib/liblibHMDecoderStatic.so lib/libHMDecoder.so; fi
