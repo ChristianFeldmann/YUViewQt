@@ -22,7 +22,7 @@ script:
 
 before_deploy:
 # Zip the Qt folder
-- zip -r Qt-5.11_mac.zip Qt/
+- zip --quiet -r Qt-5.11_mac.zip Qt/
 
 deploy:
   skip_cleanup: true
