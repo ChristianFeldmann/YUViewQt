@@ -14,15 +14,18 @@ install:
 - git clone --single-branch -b 5.11 https://github.com/qt/qtbase.git Qt_build --depth 1
 
 script:
+- cd /Users/travis/build/
+- ls -l
+- cd /Users/travis/build/ChristianFeldmann/YUViewQt
 - cd Qt_build
-- ./configure -release -opensource -confirm-license -prefix /Qt5 -openssl -I /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/include/ -L /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/ -nomake examples
+- ./configure -release -opensource -confirm-license -prefix /Users/travis/build/Qt -openssl -I /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/include/ -L /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/ -nomake examples
 - make
 - make install
 - cd ..
 
 before_deploy:
 # Zip the Qt folder
-- zip --quiet -r Qt-5.11_mac.zip /Qt
+- zip --quiet -r Qt-5.11_mac.zip /Users/travis/build/Qt
 
 deploy:
   skip_cleanup: true
