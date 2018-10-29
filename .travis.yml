@@ -15,14 +15,14 @@ install:
 
 script:
 - cd Qt_build
-- ./configure -release -opensource -confirm-license -prefix ../Qt -openssl -I /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/include/ -L /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/ -nomake examples
+- ./configure -release -opensource -confirm-license -prefix /Qt5 -openssl -I /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/include/ -L /Users/travis/build/ChristianFeldmann/YUViewQt/openSSL/ -nomake examples
 - make
 - make install
 - cd ..
 
 before_deploy:
 # Zip the Qt folder
-- zip --quiet -r Qt-5.11_mac.zip Qt/
+- zip --quiet -r Qt-5.11_mac.zip /Qt
 
 deploy:
   skip_cleanup: true
