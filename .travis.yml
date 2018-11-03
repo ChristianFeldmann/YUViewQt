@@ -25,7 +25,8 @@ script:
 
 before_deploy:
 # Zip the Qt folder
-- zip --quiet -r Qt-5.11_mac.zip /Users/travis/build/Qt
+- cd /Users/travis/build/
+- zip --quiet -r /Users/travis/build/ChristianFeldmann/Qt-5.11_mac.zip Qt
 
 deploy:
   skip_cleanup: true
