@@ -7,7 +7,8 @@ compiler:
 - gcc
 
 install:
-# Get the precompiled Qt libraries
+# Get the precompiled Qt libraries to the folder that they were installed in (/Users/travis/build/Qt)
+- cd /Users/travis/build
 - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.11/Qt-5.11_mac.zip -o Qt.zip
 - unzip -a Qt.zip
 # Get QtCharts
@@ -16,12 +17,13 @@ install:
 
 script:
 - cd QtCharts
-- ../Qt/bin/qmake
+- /Users/travis/build/Qt/bin/qmake
 - make
 - cd ..
 
 before_deploy:
 # Zip the QtCharts folder
+# This version of QtCharts is not yet installed so on the target build machine you have to run "make install"
 - zip -r QtCharts-5.11_mac.zip QtCharts
 
 deploy:
