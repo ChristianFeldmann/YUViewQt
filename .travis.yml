@@ -12,6 +12,7 @@ install:
 - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.11/Qt-5.11_mac.zip -o Qt.zip
 - unzip -a Qt.zip
 # Get QtCharts
+- cd $TRAVIS_BUILD_DIR
 - git clone --single-branch -b 5.11 https://github.com/qt/qtcharts.git QtCharts --depth 1
 - ls
 
