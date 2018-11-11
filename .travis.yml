@@ -12,6 +12,7 @@ install:
 - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.11/Qt-5.11_mac.zip -o Qt.zip
 - unzip -a Qt.zip
 # Get QtTools
+- cd $TRAVIS_BUILD_DIR
 - git clone --single-branch -b 5.11 https://github.com/qt/qttools.git Qttools --depth 1
 
 script:
@@ -23,7 +24,7 @@ script:
 before_deploy:
 # Zip the QtTools folder
 # This version of QtTools is not yet installed so on the target build machine you have to run "make install"
-- zip -r QtTools-5.11_mac.zip Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs
+- zip -r QtTools-5.11_mac.zip Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs Qttools/Makefile
 
 deploy:
   skip_cleanup: true
