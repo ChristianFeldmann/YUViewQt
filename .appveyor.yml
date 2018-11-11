@@ -7,7 +7,7 @@ install:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   - cd C:\projects
   # Get Qt and add it to the path
-  - curl -L -o Qt.zip https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase5.11/Qt-5.11.zip
+  - curl -L -o Qt.zip https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.11/Qt-5.11.zip
   - 7z x Qt.zip
   - ps: $env:path="C:\projects\Qt;C:\projects\Qt\bin;$($env:path)"
   - cd
