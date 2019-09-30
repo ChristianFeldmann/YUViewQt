@@ -22,7 +22,8 @@ install:
   - curl -L -o openSSL.zip https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1/openSSL_1_1_1_stable.zip
   - 7z x openSSL.zip
   # Get Qt into a folder in which we build it
-  - git clone --single-branch -b 5.12.3 https://github.com/qt/qtbase.git Qt_build --depth 1
+  - curl -L -o Qtbase.zip https://github.com/qt/qtbase/archive/v5.13.1.zip
+  - 7z -o Qt_build x Qtbase.zip
 
 build_script:
   # Build Qt
@@ -38,15 +39,15 @@ build_script:
 after_build:
   # Pack all the libraries, dlls and include files into one zip
   - cd C:\projects
-  - 7z a Qt-5.12.3.zip Qt/bin Qt/lib Qt/include Qt/mkspecs Qt/plugins
+  - 7z a Qt-5.13.1.zip Qt/bin Qt/lib Qt/include Qt/mkspecs Qt/plugins
 
 artifacts:
-  - path: Qt-5.12.3.zip
+  - path: Qt-5.13.1.zip
 
 deploy:
   provider: GitHub
   auth_token:
     secure: boWJ9aVfVBpOkBGzWF5yS5/Os3eDUjFfziOY04+LNA+7v+PnMFBtHeMJe2PjK4gm
-  artifact: Qt-5.12.3.zip
+  artifact: Qt-5.13.1.zip
   on:
     appveyor_repo_tag: true
