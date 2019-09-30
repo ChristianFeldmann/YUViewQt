@@ -7,12 +7,14 @@ install:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   - cd C:\projects
   # Get Qt and add it to the path
-  - curl -L -o Qt.zip https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.12.3/Qt-5.12.3.zip  
+  - curl -L -o Qt.zip https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.13.1/Qt-5.13.1.zip
   - 7z x Qt.zip
   - ps: $env:path="C:\projects\Qt;C:\projects\Qt\bin;$($env:path)"
   - cd
   # Checkout Qttools
-  - git clone --single-branch -b 5.12.3 https://github.com/qt/qttools.git Qttools --depth 1
+  - curl -L -o Qttools.zip https://github.com/qt/qttools/archive/v5.13.1.zip
+  - 7z x Qttools.zip
+  - ren qttools-5.13.1 Qttools
   
 build_script:
   # Build the tools
@@ -26,15 +28,15 @@ build_script:
 after_build:
   # Pack all the libraries, dlls and include files into one zip
   - cd C:\projects
-  - 7z a Qt-5.12.3-Tools.zip Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs
+  - 7z a Qt-5.13.1-Tools.zip Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs
   
 artifacts:
-  - path: Qt-5.12.3-Tools.zip
+  - path: Qt-5.13.1-Tools.zip
 
 deploy:
   provider: GitHub
   auth_token:
     secure: boWJ9aVfVBpOkBGzWF5yS5/Os3eDUjFfziOY04+LNA+7v+PnMFBtHeMJe2PjK4gm
-  artifact: Qt-5.12.3-Tools.zip
+  artifact: Qt-5.13.1-Tools.zip
   on:
     appveyor_repo_tag: true

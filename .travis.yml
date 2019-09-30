@@ -9,11 +9,13 @@ compiler:
 install:
 # Get the precompiled Qt libraries to the folder that they were installed in (/Users/travis/build/Qt)
 - cd /Users/travis/build
-- curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.12.3/Qt-5.12.3_mac.zip -o Qt.zip
+- curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.13.1/Qt-5.13.1_mac.zip -o Qt.zip
 - unzip -a Qt.zip
 # Get QtTools
 - cd $TRAVIS_BUILD_DIR
-- git clone --single-branch -b 5.12.3 https://github.com/qt/qttools.git Qttools --depth 1
+- curl -L https://github.com/qt/qttools/archive/v5.13.1.zip -o Qttools.zip
+- unzip -q -a Qttools.zip
+- mv qttools-5.13.1 Qttools
 
 script:
 - cd Qttools
@@ -24,14 +26,14 @@ script:
 before_deploy:
 # Zip the QtTools folder
 # This version of QtTools is not yet installed so on the target build machine you have to run "make install"
-- zip -r QtTools-5.12.3_mac.zip Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs Qttools/Makefile
+- zip -r QtTools-5.13.1_mac.zip Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs Qttools/Makefile
 
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
     secure: kz5qfB8zuzBc7rm3u5aHB5oilKWhduGne731/7sNCgYk+QJ6ALrdgXBSwf9QQcvntUJqtm5R+LxK8ulplrfShlLXE5HR+hZDw4MEkrhYvfF4GPtV/YcxeBKYMKJXYmuBv7K22icCPXhcXnsYr8g8/eAyeUmhFL6dia2z2524NVNcLUKBjKo4U55Ann0dSfWb49xQw39oSjLNWBBICoKQsazRKLTC7uucryQO7eYSmb/jPfZ3G5O7/T4BQp85fkyC1xCH21jEypTeaMVzE/Ha0wb5JvC2wQc2YJwZqumqAbghksV5Ydi59/ZX2D2TqauCyu/dQP9fsP503sWZaxuBLgbaWT8pGmk3SaydX00yE/D0fYI99igQSvxACxP07QR6Uvc8Pi5YTQaLAWKa0JpZ3Np5pXEYCtBaTnQqNDNr6JgiQ9zGqXeCd7/ZghLfOLcYeWi1okqnlDk15RdhAKJIbX/CkVnYYG7xPrTwN3aksTQm9bsY4EbzgD8SVLWROqgs6bmUHlWOjKXT2ve+GWkfL41lOp8A1lCRaFtfjTVMD5f7xUzaaGIe+PD+g4CXoEMsa4Cqd7s6E8RoZZ/HN3427ybrH97nUtqoSorNM+Z3Ig5mDzOVUt64UxeWxTjKvN17iBPjQZV4XjFWtaSpdDsyBYTm/ihuegHhydACji857MU=
-  file: QtTools-5.12.3_mac.zip
+  file: QtTools-5.13.1_mac.zip
   on:
     repo: ChristianFeldmann/YUViewQt
     tags: true
