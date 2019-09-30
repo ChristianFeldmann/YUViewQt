@@ -23,7 +23,8 @@ install:
   - 7z x openSSL.zip
   # Get Qt into a folder in which we build it
   - curl -L -o Qtbase.zip https://github.com/qt/qtbase/archive/v5.13.1.zip
-  - 7z -o Qt_build x Qtbase.zip
+  - 7z x Qtbase.zip
+  - ren qtbase-5.13.1 Qt_build
 
 build_script:
   # Build Qt

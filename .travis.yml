@@ -12,7 +12,8 @@ install:
 - unzip -a openSSL.zip
 # Get Qt into a folder in which we build it
 - curl -L https://github.com/qt/qtbase/archive/v5.13.1.zip -o Qtbase.zip
-- unzip -a Qtbase.zip -d Qt_build
+- unzip -a Qtbase.zip
+- mv qtbase-5.13.1 Qt_build
 
 script:
 # Build QtBase and install it to /Users/travis/build/Qt
