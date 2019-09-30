@@ -19,6 +19,7 @@ install:
 
 script:
 - cd Qttools
+- mkdir .git # Hack to launch qtsync
 - /Users/travis/build/Qt/bin/qmake
 - make
 - cd ..

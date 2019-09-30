@@ -19,6 +19,7 @@ install:
 build_script:
   # Build the tools
   - cd C:\projects\Qttools
+  - mkdir .git # Hack to launch qtsync
   - qmake
   - where nmake
   - nmake
