@@ -18,6 +18,8 @@ install:
   
 build_script:
   - cd C:\projects\QtCharts
+  # Hack to enable qtsync although we did not technically checkout from git
+  - mkdir .git
   - qmake
   - where nmake
   - nmake

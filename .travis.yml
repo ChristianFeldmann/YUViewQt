@@ -19,6 +19,8 @@ install:
 
 script:
 - cd QtCharts
+# Hack to enable qtsync although we did not technically checkout from git
+- mkdir .git
 - /Users/travis/build/Qt/bin/qmake
 - make
 - cd ..
