@@ -18,6 +18,8 @@ install:
 script:
 # Build QtBase and install it to /Users/travis/build/Qt
 - cd Qt_build
+# Hack to enable qtsync although we did not technically checkout from git
+- mkdir .git
 - ./configure -release -opensource -confirm-license -prefix /Users/travis/build/Qt -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/YUViewQt/openSSL/ -nomake examples
 - make
 - make install

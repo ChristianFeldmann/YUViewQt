@@ -29,6 +29,8 @@ install:
 build_script:
   # Build Qt
   - cd C:\projects\Qt_build
+  # Hack to enable qtsync although we did not technically checkout from git
+  - mkdir .git
   - .\configure.bat -release -opensource -confirm-license -prefix "C:\projects\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-IC:\projects\openSSL\include" "-LC:\projects\openSSL" -nomake examples -nomake tests -no-direct2d
   - where nmake
   - where jom
