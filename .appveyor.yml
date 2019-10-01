@@ -29,7 +29,8 @@ build_script:
 after_build:
   # Pack all the libraries, dlls and include files into one zip
   - cd C:\projects
-  - 7z a Qt-5.13.1-Charts.zip QtCharts/bin QtCharts/lib QtCharts/include QtCharts/mkspecs QtCharts/src
+  # Pack everything (but ignore the build folders which start with '.')
+  - 7z a Qt-5.13.1-Charts.zip QtCharts/* -r -x!.*
   
 artifacts:
   - path: Qt-5.13.1-Charts.zip
