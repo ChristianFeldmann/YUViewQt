@@ -30,7 +30,7 @@ after_build:
   # Pack all the libraries, dlls and include files into one zip
   - cd C:\projects
   # Pack everything (but ignore the build folders which start with '.')
-  - 7z a Qt-5.13.1-Charts.zip QtCharts/* -r -x!.*
+  - 7z a Qt-5.13.1-Charts.zip QtCharts/* -r
   
 artifacts:
   - path: Qt-5.13.1-Charts.zip

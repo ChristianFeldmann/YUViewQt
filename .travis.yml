@@ -26,9 +26,9 @@ script:
 - cd ..
 
 before_deploy:
-# Zip the QtCharts folder (ignore hidden build folder)
+# Zip the whole QtCharts folder
 # This version of QtCharts is not yet installed so on the target build machine you have to run "make install"
-- zip -r QtCharts-5.13.1_mac.zip QtCharts -x "*/.*"
+- zip -r QtCharts-5.13.1_mac.zip QtCharts
 
 deploy:
   skip_cleanup: true
