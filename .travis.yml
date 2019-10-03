@@ -2,23 +2,40 @@ language: cpp
 matrix:
   include:
   - os: osx
+  - os: windows
 compiler:
-- gcc
+  - gcc
 install:
-- git clone --single-branch -b OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git
-  openSSL --depth 1
+  - git clone --single-branch -b OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git openSSL --depth 1
 
 script:
-- cd openSSL
-- mkdir dist
-- "./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc"
-- make depend
-- make
-- ls
-- cd ..
+  - cd openSSL
+  - mkdir dist
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      "./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc"
+      make depend
+      make
+      ls
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+      curl -L -o nasminst.exe https://www.nasm.us/pub/nasm/releasebuilds/2.14rc15/win64/nasm-2.14rc15-installer-x64.exe
+      start /wait nasminst.exe /S
+      ps: $env:path="C:\Program Files\NASM;$($env:path)"
+      where nasm
+    fi
+  - cd ..
 
 after_success:
-- zip -r openSSL_1_1_1_stable_mac.zip openSSL/include openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      zip -r openSSL_1_1_1_stable_mac.zip openSSL/include openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+      7z a openSSL_1_1_1_stable.zip openssl/include openSSL/libcrypto-1_1-x64.dll openSSL/libcrypto.lib openSSL/libssl-1_1-x64.dll openSSL/libssl.lib
+    fi
 
 deploy:
   skip_cleanup: true
