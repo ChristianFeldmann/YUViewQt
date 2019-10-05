@@ -19,7 +19,7 @@ script:
       ls
     fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nasm; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then where nasm; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then nasm --version; fi
   - cd ..
 
 after_success:
