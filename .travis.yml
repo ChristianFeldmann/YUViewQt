@@ -20,7 +20,7 @@ script:
     fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then curl -L -o nasminst.exe https://www.nasm.us/pub/nasm/releasebuilds/2.14rc15/win64/nasm-2.14rc15-installer-x64.exe; fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then start /wait nasminst.exe /S; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then export PATH=$PATH:";C:\Program Files\NASM" env:path += "; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then export PATH=$PATH:";C:\Program Files\NASM"; fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then where nasm; fi
   - cd ..
 
