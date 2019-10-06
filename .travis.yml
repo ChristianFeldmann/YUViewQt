@@ -19,6 +19,7 @@ script:
       ls
     fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nasm; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then export PATH=$PATH:";C:\Program Files\NASM"; fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then nasm --version; fi
   - cd ..
 
