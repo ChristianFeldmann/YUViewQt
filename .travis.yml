@@ -7,20 +7,23 @@ compiler:
   - gcc
 install:
   - git clone --single-branch -b OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git openSSL --depth 1
+  # Install nasm on windows
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nasm; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then export PATH=$PATH:";C:\Program Files\NASM"; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then nasm --version; fi
 
 script:
   - cd openSSL
-  - mkdir dist
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      mkdir dist
       "./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc"
       make depend
       make
       ls
     fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nasm; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then export PATH=$PATH:";C:\Program Files\NASM"; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then nasm --version; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then perl Configure VC-WIN64A; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then nmake; fi
   - cd ..
 
 after_success:
