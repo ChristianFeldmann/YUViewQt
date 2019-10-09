@@ -14,7 +14,6 @@ install:
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install strawberryperl; fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then perl --version; fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install VisualCppBuildTools; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64; fi
   
 script:
   - cd openSSL
@@ -26,8 +25,7 @@ script:
       make
       ls
     fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then perl Configure VC-WIN64A; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then nmake; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then ../buildWindows.bat; fi
   - cd ..
 
 after_success:
