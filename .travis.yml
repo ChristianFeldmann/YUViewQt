@@ -37,7 +37,7 @@ script:
   - mkdir .git
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      ./configure -release -opensource -confirm-license -prefix /Users/travis/build/Qt -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/YUViewQt/openSSL/ -nomake examples
+      ./configure -release -opensource -confirm-license -prefix /Users/travis/build/Qt -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/openSSL/ -nomake examples
       make
       make install
     fi
@@ -45,13 +45,14 @@ script:
   - cd ..
 
 after_success:
-  - cd /Users/travis/build/
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      - zip --quiet -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qt/bin Qt/lib Qt/include Qt/mkspecs Qt/plugins
+      cd /Users/travis/build/
+      zip --quiet -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qt/bin Qt/lib Qt/include Qt/mkspecs Qt/plugins
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+      cd /c/Users/travis/build
       7z a ${OUTPUT_ZIP_FILE} Qt/bin Qt/lib Qt/include Qt/mkspecs Qt/plugins
     fi
   - cd ${TRAVIS_BUILD_DIR}
