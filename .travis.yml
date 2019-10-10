@@ -9,17 +9,19 @@ compiler:
   - gcc
 install:
   - git clone --single-branch -b OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git openSSL --depth 1
-  # Install nasm on windows
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nasm; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then export PATH=$PATH:";C:\Program Files\NASM"; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then nasm --version; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install strawberryperl; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then perl --version; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install VisualCppBuildTools; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then unset CC; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then unset CC_FOR_BUILD; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then unset CXX; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then unset CXX_FOR_BUILD; fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+      choco install nasm
+      export PATH=$PATH:";C:\Program Files\NASM"
+      nasm --version
+      choco install strawberryperl
+      perl --version
+      choco install VisualCppBuildTools
+      unset CC
+      unset CC_FOR_BUILD
+      unset CXX
+      unset CXX_FOR_BUILD
+    fi
   
 script:
   - cd openSSL
