@@ -28,7 +28,7 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       mkdir dist
-      "./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc"
+      ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc
       make depend
       make
       ls
