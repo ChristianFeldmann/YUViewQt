@@ -2,30 +2,56 @@ language: cpp
 matrix:
   include:
   - os: osx
+    env: OUTPUT_ZIP_FILE=openSSL_1_1_1_stable_mac.zip
+  - os: windows
+    env: OUTPUT_ZIP_FILE=openSSL_1_1_1_stable_win.zip
 compiler:
-- gcc
+  - gcc
 install:
-- git clone --single-branch -b OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git
-  openSSL --depth 1
-
+  - git clone --single-branch -b OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git openSSL --depth 1
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+      choco install nasm
+      export PATH=$PATH:";C:\Program Files\NASM"
+      nasm --version
+      choco install strawberryperl
+      perl --version
+      choco install VisualCppBuildTools
+      unset CC
+      unset CC_FOR_BUILD
+      unset CXX
+      unset CXX_FOR_BUILD
+    fi
+  
 script:
-- cd openSSL
-- mkdir dist
-- "./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc"
-- make depend
-- make
-- ls
-- cd ..
+  - cd openSSL
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      mkdir dist
+      "./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc"
+      make depend
+      make
+      ls
+    fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then ../buildWindows.bat; fi
+  - cd ..
 
 after_success:
-- zip -r openSSL_1_1_1_stable_mac.zip openSSL/include openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      zip -r $OUTPUT_ZIP_FILE openSSL/include openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+      7z a $OUTPUT_ZIP_FILE openssl/include openSSL/libcrypto-1_1-x64.dll openSSL/libcrypto.lib openSSL/libssl-1_1-x64.dll openSSL/libssl.lib
+    fi
 
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
     secure: kz5qfB8zuzBc7rm3u5aHB5oilKWhduGne731/7sNCgYk+QJ6ALrdgXBSwf9QQcvntUJqtm5R+LxK8ulplrfShlLXE5HR+hZDw4MEkrhYvfF4GPtV/YcxeBKYMKJXYmuBv7K22icCPXhcXnsYr8g8/eAyeUmhFL6dia2z2524NVNcLUKBjKo4U55Ann0dSfWb49xQw39oSjLNWBBICoKQsazRKLTC7uucryQO7eYSmb/jPfZ3G5O7/T4BQp85fkyC1xCH21jEypTeaMVzE/Ha0wb5JvC2wQc2YJwZqumqAbghksV5Ydi59/ZX2D2TqauCyu/dQP9fsP503sWZaxuBLgbaWT8pGmk3SaydX00yE/D0fYI99igQSvxACxP07QR6Uvc8Pi5YTQaLAWKa0JpZ3Np5pXEYCtBaTnQqNDNr6JgiQ9zGqXeCd7/ZghLfOLcYeWi1okqnlDk15RdhAKJIbX/CkVnYYG7xPrTwN3aksTQm9bsY4EbzgD8SVLWROqgs6bmUHlWOjKXT2ve+GWkfL41lOp8A1lCRaFtfjTVMD5f7xUzaaGIe+PD+g4CXoEMsa4Cqd7s6E8RoZZ/HN3427ybrH97nUtqoSorNM+Z3Ig5mDzOVUt64UxeWxTjKvN17iBPjQZV4XjFWtaSpdDsyBYTm/ihuegHhydACji857MU=
-  file: openSSL_1_1_1_stable_mac.zip
+  file: $OUTPUT_ZIP_FILE
   on:
     repo: ChristianFeldmann/YUViewQt
     tags: true
