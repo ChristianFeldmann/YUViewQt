@@ -11,8 +11,9 @@ compiler:
 - gcc
 
 install:
+  - echo ${TRAVIS_BUILD_DIR}
   # Get the precompiled openssl libraries
-  - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1/$OPEN_SSL_FILE -o openSSL.zip
+  - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1/${OPEN_SSL_FILE} -o openSSL.zip
   - unzip -q -a openSSL.zip
   # Get Qt into a folder in which we build it
   - curl -L https://github.com/qt/qtbase/archive/v5.13.1.zip -o Qtbase.zip
@@ -51,7 +52,7 @@ after_success:
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-      7z a $OUTPUT_ZIP_FILE Qt/bin Qt/lib Qt/include Qt/mkspecs Qt/plugins
+      7z a ${OUTPUT_ZIP_FILE} Qt/bin Qt/lib Qt/include Qt/mkspecs Qt/plugins
     fi
   - cd ${TRAVIS_BUILD_DIR}
   - ls -l
