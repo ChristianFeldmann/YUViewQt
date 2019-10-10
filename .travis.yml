@@ -39,6 +39,7 @@ script:
 after_success:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      ls openSSL
       zip -r $OUTPUT_ZIP_FILE openSSL/include openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib
     fi
   - |
