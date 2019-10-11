@@ -21,7 +21,7 @@ install:
   - mv qtbase-5.13.1 Qt_build
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-      choco install winflexbison
+      choco install winflexbison3
       choco install jom
       choco install VisualCppBuildTools
       unset CC
