@@ -24,6 +24,7 @@ install:
       choco install winflexbison3
       choco install jom
       choco install VisualCppBuildTools
+      choco install strawberryperl
       unset CC
       unset CC_FOR_BUILD
       unset CXX
