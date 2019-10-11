@@ -8,7 +8,7 @@ matrix:
       env: OUTPUT_ZIP_FILE=Qtbase-5.13.1_win.zip
       env: OPEN_SSL_FILE=openSSL_1_1_1_stable_win.zip
 compiler:
-- gcc
+  - gcc
 
 install:
   - echo ${TRAVIS_BUILD_DIR}
