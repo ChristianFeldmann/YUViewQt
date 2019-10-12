@@ -2,8 +2,8 @@
 echo Setup Winflexbison
 copy C:\ProgramData\chocolatey\bin\win_flex.exe C:\ProgramData\chocolatey\bin\flex.exe
 copy C:\ProgramData\chocolatey\bin\win_bison.exe C:\ProgramData\chocolatey\bin\bison.exe
-echo Delete wrong perl version
-del C:\program files\Git\usr\bin\perl.exe
+echo Set
+Set
 echo Where perl
 where perl
 perl --version

@@ -25,6 +25,7 @@ install:
       choco install jom
       choco install VisualCppBuildTools
       choco install strawberryperl
+      choco uninstall git
       unset CC
       unset CC_FOR_BUILD
       unset CXX
