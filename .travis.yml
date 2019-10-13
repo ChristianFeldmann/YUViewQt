@@ -30,7 +30,6 @@ install:
       unset CXX
       unset CXX_FOR_BUILD
       rm 'C:\Program Files\Git\usr\bin\perl.exe'
-      perl --version
     fi
 
 script:
