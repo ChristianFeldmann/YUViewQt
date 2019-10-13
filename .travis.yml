@@ -29,7 +29,7 @@ install:
       unset CC_FOR_BUILD
       unset CXX
       unset CXX_FOR_BUILD
-      del 'C:\Program Files\Git\usr\bin\perl.exe'
+      rm 'C:\Program Files\Git\usr\bin\perl.exe'
       dir 'C:\Program Files\Git\usr\bin\perl.exe'
       perl --version
     fi
