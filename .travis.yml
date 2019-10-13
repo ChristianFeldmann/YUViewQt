@@ -25,11 +25,13 @@ install:
       choco install jom
       choco install VisualCppBuildTools
       choco install strawberryperl
+      export PATH=$PATH:";C:\Strawberry\perl\bin"
       unset CC
       unset CC_FOR_BUILD
       unset CXX
       unset CXX_FOR_BUILD
       rm 'C:\Program Files\Git\usr\bin\perl.exe'
+      perl --version
     fi
 
 script:
