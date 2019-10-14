@@ -2,11 +2,13 @@ language: cpp
 matrix:
   include:
     - os: osx
-      env: OUTPUT_ZIP_FILE=Qtbase-5.13.1_mac.zip
-      env: OPEN_SSL_FILE=openSSL_1_1_1_stable_mac.zip
+      env: 
+        - OUTPUT_ZIP_FILE=Qtbase-5.13.1_mac.zip
+        - OPEN_SSL_FILE=openSSL_1_1_1_stable_mac.zip
     - os: windows
-      env: OUTPUT_ZIP_FILE=Qtbase-5.13.1_win.zip
-      env: OPEN_SSL_FILE=openSSL_1_1_1_stable_win.zip
+      env: 
+        - OUTPUT_ZIP_FILE=Qtbase-5.13.1_win.zip
+        - OPEN_SSL_FILE=openSSL_1_1_1_stable_win.zip
 compiler:
   - gcc
 
