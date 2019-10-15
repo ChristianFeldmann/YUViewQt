@@ -54,11 +54,19 @@ after_success:
   # This version of QtCharts is not yet installed so on the target build machine you have to run "make install"
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      # Cleanup of moc/obj/pch files
+      rm QtCharts/src/charts/.moc/*
+      rm QtCharts/src/charts/.obj/*
+      rm QtCharts/src/charts/.pch/QtCharts/*
       zip --quiet -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} QtCharts
       ls /Users/travis/build/
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+      # Cleanup of moc/obj/pch files
+      rm QtCharts/src/charts/.moc/release/*
+      rm QtCharts/src/charts/.obj/release/*
+      rm QtCharts/src/charts/.pch/release/*
       7z a ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} QtCharts
       ls /c/Users/travis/build
     fi
