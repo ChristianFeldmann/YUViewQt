@@ -15,7 +15,7 @@ compiler:
 install:
   # Get the precompiled Qt libraries to the folder that they were installed in (/Users/travis/build/Qt)
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then cd /Users/travis/build; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then cd C:\Users\travis\build; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then cd /c/Users/travis/build; fi
   - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.13.1/${QT_FILE} -o Qt.zip
   - unzip -a Qt.zip
   # Get QtTools
