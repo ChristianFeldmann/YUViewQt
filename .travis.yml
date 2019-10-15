@@ -2,39 +2,74 @@ language: cpp
 matrix:
   include:
     - os: osx
-      #env: DEPLOY_FILE=lib/libHMDecoder.dylib
+      env: 
+        - OUTPUT_ZIP_FILE=QtTools-5.13.1_mac.zip
+        - QT_FILE=Qt-5.13.1_mac.zip
+    - os: windows
+      env: 
+        - OUTPUT_ZIP_FILE=QtTools-5.13.1_win.zip
+        - QT_FILE=Qt-5.13.1_win.zip
 compiler:
-- gcc
+  - gcc
 
 install:
-# Get the precompiled Qt libraries to the folder that they were installed in (/Users/travis/build/Qt)
-- cd /Users/travis/build
-- curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.13.1/Qt-5.13.1_mac.zip -o Qt.zip
-- unzip -a Qt.zip
-# Get QtTools
-- cd $TRAVIS_BUILD_DIR
-- curl -L https://github.com/qt/qttools/archive/v5.13.1.zip -o Qttools.zip
-- unzip -q -a Qttools.zip
-- mv qttools-5.13.1 Qttools
+  # Get the precompiled Qt libraries to the folder that they were installed in (/Users/travis/build/Qt)
+  - cd /Users/travis/build
+  - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.13.1/${QT_FILE} -o Qt.zip
+  - unzip -a Qt.zip
+  # Get QtTools
+  - cd $TRAVIS_BUILD_DIR
+  - curl -L https://github.com/qt/qttools/archive/v5.13.1.zip -o Qttools.zip
+  - unzip -q -a Qttools.zip
+  - mv qttools-5.13.1 Qttools
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+      choco install winflexbison3
+      choco install VisualCppBuildTools
+      choco install strawberryperl
+      export PATH=$PATH:";C:\Strawberry\perl\bin"
+      # We have to remove this perl executable because it clashes with strawberry perl.
+      # Strawberry perl is needed because the perl version that comes with git is too old to compile Qt
+      rm 'C:\Program Files\Git\usr\bin\perl.exe'
+      unset CC
+      unset CC_FOR_BUILD
+      unset CXX
+      unset CXX_FOR_BUILD
+    fi
 
 script:
-- cd Qttools
-- mkdir .git # Hack to launch qtsync
-- /Users/travis/build/Qt/bin/qmake
-- make
-- cd ..
+  - cd Qttools
+  - mkdir .git # Hack to launch qtsync
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      /Users/travis/build/Qt/bin/qmake
+      make -j 2
+    fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then ../buildWindows.bat; fi
+  - cd ..
 
-before_deploy:
-# Zip the QtTools folder
-# This version of QtTools is not yet installed so on the target build machine you have to run "make install"
-- zip -r QtTools-5.13.1_mac.zip Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs Qttools/Makefile
+after_success:
+  # Zip the QtTools folder
+  # This version of QtTools is not yet installed so on the target build machine you have to run "make install"
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      zip --quiet -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs Qttools/Makefile
+      ls /Users/travis/build/
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+      7z a ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs Qttools/Makefile
+      ls /c/Users/travis/build
+    fi
+  - cd ${TRAVIS_BUILD_DIR}
+  - ls -l
 
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
     secure: kz5qfB8zuzBc7rm3u5aHB5oilKWhduGne731/7sNCgYk+QJ6ALrdgXBSwf9QQcvntUJqtm5R+LxK8ulplrfShlLXE5HR+hZDw4MEkrhYvfF4GPtV/YcxeBKYMKJXYmuBv7K22icCPXhcXnsYr8g8/eAyeUmhFL6dia2z2524NVNcLUKBjKo4U55Ann0dSfWb49xQw39oSjLNWBBICoKQsazRKLTC7uucryQO7eYSmb/jPfZ3G5O7/T4BQp85fkyC1xCH21jEypTeaMVzE/Ha0wb5JvC2wQc2YJwZqumqAbghksV5Ydi59/ZX2D2TqauCyu/dQP9fsP503sWZaxuBLgbaWT8pGmk3SaydX00yE/D0fYI99igQSvxACxP07QR6Uvc8Pi5YTQaLAWKa0JpZ3Np5pXEYCtBaTnQqNDNr6JgiQ9zGqXeCd7/ZghLfOLcYeWi1okqnlDk15RdhAKJIbX/CkVnYYG7xPrTwN3aksTQm9bsY4EbzgD8SVLWROqgs6bmUHlWOjKXT2ve+GWkfL41lOp8A1lCRaFtfjTVMD5f7xUzaaGIe+PD+g4CXoEMsa4Cqd7s6E8RoZZ/HN3427ybrH97nUtqoSorNM+Z3Ig5mDzOVUt64UxeWxTjKvN17iBPjQZV4XjFWtaSpdDsyBYTm/ihuegHhydACji857MU=
-  file: QtTools-5.13.1_mac.zip
+  file: ${OUTPUT_ZIP_FILE}
   on:
     repo: ChristianFeldmann/YUViewQt
     tags: true
