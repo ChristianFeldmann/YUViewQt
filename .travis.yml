@@ -1,10 +1,10 @@
 language: cpp
 matrix:
   include:
-    - os: osx
-      env: 
-        - OUTPUT_ZIP_FILE=QtTools-5.13.1_mac.zip
-        - QT_FILE=Qtbase-5.13.1_mac.zip
+    # - os: osx
+    #   env: 
+    #     - OUTPUT_ZIP_FILE=QtTools-5.13.1_mac.zip
+    #     - QT_FILE=Qtbase-5.13.1_mac.zip
     - os: windows
       env: 
         - OUTPUT_ZIP_FILE=QtTools-5.13.1_win.zip
@@ -14,11 +14,10 @@ compiler:
 
 install:
   # Get the precompiled Qt libraries to the folder that they were installed in (/Users/travis/build/Qt)
-  - cd /Users/travis/build
+  - cd $TRAVIS_BUILD_DIR
   - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.13.1/${QT_FILE} -o Qt.zip
   - unzip -a Qt.zip
   # Get QtTools
-  - cd $TRAVIS_BUILD_DIR
   - curl -L https://github.com/qt/qttools/archive/v5.13.1.zip -o Qttools.zip
   - unzip -q -a Qttools.zip
   - mv qttools-5.13.1 Qttools
