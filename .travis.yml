@@ -1,10 +1,10 @@
 language: cpp
 matrix:
   include:
-    # - os: osx
-    #   env: 
-    #     - OUTPUT_ZIP_FILE=QtTools-5.13.1_mac.zip
-    #     - QT_FILE=Qtbase-5.13.1_mac.zip
+    - os: osx
+      env: 
+        - OUTPUT_ZIP_FILE=QtTools-5.13.1_mac.zip
+        - QT_FILE=Qtbase-5.13.1_mac.zip
     - os: windows
       env: 
         - OUTPUT_ZIP_FILE=QtTools-5.13.1_win.zip
