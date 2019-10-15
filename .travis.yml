@@ -27,8 +27,6 @@ install:
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
       choco install winflexbison3
       choco install VisualCppBuildTools
-      choco install strawberryperl
-      export PATH=$PATH:";C:\Strawberry\perl\bin"
       # We have to remove this perl executable because it clashes with strawberry perl.
       # Strawberry perl is needed because the perl version that comes with git is too old to compile Qt
       rm 'C:\Program Files\Git\usr\bin\perl.exe'
