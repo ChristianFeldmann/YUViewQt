@@ -53,7 +53,8 @@ after_success:
   # This version of QtTools is not yet installed so on the target build machine you have to run "make install"
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      zip --quiet -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs Qttools/Makefile Qttools/*
+      zip -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs Qttools/Makefile Qttools/*
+      ls /Users/travis/build/Qttools
       ls /Users/travis/build/
     fi
   - |
