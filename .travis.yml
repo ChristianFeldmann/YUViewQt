@@ -25,7 +25,6 @@ install:
   - mv qttools-5.13.1 Qttools
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-      choco install VisualCppBuildTools
       choco install strawberryperl
       export PATH=$PATH:";C:\Strawberry\perl\bin"
       # We have to remove this perl executable because it clashes with strawberry perl.
@@ -38,7 +37,7 @@ install:
     fi
 
 script:
-  - cd Qttools
+  - cd Qttools/src/macdeployqt
   - mkdir .git # Hack to launch qtsync
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
@@ -53,7 +52,7 @@ after_success:
   # This version of QtTools is not yet installed so on the target build machine you have to run "make install"
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      zip -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs Qttools/Makefile Qttools/Qttools.pro Qttools/.qmake.conf Qttools/.qmake.cache Qttools/src/src.pro Qttools/src/Makefile
+      zip -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs Qttools/Makefile Qttools/Qttools.pro Qttools/.qmake.conf Qttools/.qmake.cache Qttools/src/src.pro Qttools/src/Makefile Qttools/src/qdoc/qtqdoc-config.pri
       ls /Users/travis/build/Qttools
       ls /Users/travis/build/
     fi
