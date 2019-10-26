@@ -37,20 +37,24 @@ install:
     fi
 
 script:
-  - cd Qttools/src/macdeployqt
   - mkdir .git # Hack to launch qtsync
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      cd Qttools/src/macdeployqt
       /Users/travis/build/Qt/bin/qmake
       make -j 2
       make install
     fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then $TRAVIS_BUILD_DIR/buildWindows.bat; fi
-  - cd ..
+  - |
+    if [ "$TRAVIS_OS_NAME" = "windows" ]; then 
+      cd Qttools/src/windeployqt
+      $TRAVIS_BUILD_DIR/buildWindows.bat;
+    fi
 
 after_success:
-  # Zip the QtTools folder
-  # This version of QtTools is not yet installed so on the target build machine you have to run "make install"
+  # Zip only the ***deployqt executable.
+  # On mac, you will have to copy it to the correct folder (The qt bin installation folder)
+  - cd ${TRAVIS_BUILD_DIR}
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       zip -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qttools/bin/macdeployqt
