@@ -37,7 +37,6 @@ install:
     fi
 
 script:
-  - mkdir .git # Hack to launch qtsync
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       cd Qttools/src/macdeployqt
