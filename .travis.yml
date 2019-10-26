@@ -3,11 +3,11 @@ matrix:
   include:
     - os: osx
       env: 
-        - OUTPUT_ZIP_FILE=QtTools-5.13.1_mac.zip
+        - OUTPUT_ZIP_FILE=MacDeployQt-5.13.1.zip
         - QT_FILE=Qtbase-5.13.1_mac.zip
     - os: windows
       env: 
-        - OUTPUT_ZIP_FILE=QtTools-5.13.1_win.zip
+        - OUTPUT_ZIP_FILE=WinDeployQt-5.13.1_win.zip
         - QT_FILE=Qtbase-5.13.1_win.zip
 compiler:
   - gcc
@@ -45,7 +45,7 @@ script:
       make -j 2
       make install
     fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then ../buildWindows.bat; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then $TRAVIS_BUILD_DIR/buildWindows.bat; fi
   - cd ..
 
 after_success:
@@ -53,14 +53,14 @@ after_success:
   # This version of QtTools is not yet installed so on the target build machine you have to run "make install"
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      zip -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qttools/*
+      zip -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qttools/bin/macdeployqt
       ls /Users/travis/build/Qttools
-      ls /Users/travis/build/
+      ls /Users/travis/build/Qttools/bin
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-      7z a ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qttools/bin Qttools/lib Qttools/include Qttools/mkspecs Qttools/Makefile
-      ls /c/Users/travis/build
+      7z a ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qttools/bin/windeployqt.exe
+      ls /c/Users/travis/buildQttools/bin
     fi
   - cd ${TRAVIS_BUILD_DIR}
   - ls -l
