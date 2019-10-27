@@ -57,7 +57,7 @@ after_success:
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
       7z a $OUTPUT_ZIP_FILE openssl/include openSSL/libcrypto-1_1-x64.dll openSSL/libcrypto.lib openSSL/libssl-1_1-x64.dll openSSL/libssl.lib
     fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then zip -r $OUTPUT_ZIP_FILE openSSL/include openSSL/libcrypto.* openSSL/libssl.*; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then zip -r $OUTPUT_ZIP_FILE openSSL/include openSSL/libcrypto.* openSSL/libssl.*; fi
 
 deploy:
   skip_cleanup: true
