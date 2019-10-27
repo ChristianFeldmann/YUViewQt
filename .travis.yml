@@ -5,6 +5,10 @@ matrix:
     env: OUTPUT_ZIP_FILE=openSSL_1_1_1_stable_mac.zip
   - os: windows
     env: OUTPUT_ZIP_FILE=openSSL_1_1_1_stable_win.zip
+  - os: linux
+    dist: trusty
+    env: OUTPUT_ZIP_FILE=openSSL_1_1_1_stable_ubuntu_trusty.zip
+
 compiler:
   - gcc
 install:
@@ -16,7 +20,6 @@ install:
       nasm --version
       choco install strawberryperl
       perl --version
-      choco install VisualCppBuildTools
       unset CC
       unset CC_FOR_BUILD
       unset CXX
@@ -26,25 +29,30 @@ install:
 script:
   - cd openSSL
   - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+      ../buildWindows.bat;
+    else
       mkdir dist
       ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc
       make depend
       make
       ls
     fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then ../buildWindows.bat; fi
   - cd ..
 
 after_success:
+  - ls openSSL
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      ls openSSL
       zip -r $OUTPUT_ZIP_FILE openSSL/include openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
       7z a $OUTPUT_ZIP_FILE openssl/include openSSL/libcrypto-1_1-x64.dll openSSL/libcrypto.lib openSSL/libssl-1_1-x64.dll openSSL/libssl.lib
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      zip -r $OUTPUT_ZIP_FILE openSSL/include openSSL/libcrypto.1.1.so openSSL/libcrypto.a openSSL/libcrypto.so openSSL/libssl.1.1.so openSSL/libssl.a openSSL/libssl.so
     fi
 
 deploy:
