@@ -12,7 +12,9 @@ matrix:
 compiler:
   - gcc
 install:
-  - git clone --single-branch -b OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git openSSL --depth 1
+  - curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1-stable.zip -o openSSL.zip
+  - unzip -q -a openSSL.zip
+  - mv openssl-OpenSSL_1_1_1-stable openSSL
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
       choco install nasm
@@ -28,15 +30,18 @@ install:
   
 script:
   - cd openSSL
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-      ../buildWindows.bat;
-    else
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then ../buildWindows.bat; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       mkdir dist
       ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc
       make depend
       make
-      ls
+    fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      mkdir dist
+      ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared linux-x86_64
+      make depend
+      make -j 2
     fi
   - cd ..
 
@@ -52,7 +57,7 @@ after_success:
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      zip -r $OUTPUT_ZIP_FILE openSSL/include openSSL/libcrypto.1.1.so openSSL/libcrypto.a openSSL/libcrypto.so openSSL/libssl.1.1.so openSSL/libssl.a openSSL/libssl.so
+      zip -r $OUTPUT_ZIP_FILE openSSL/include openSSL/libcrypto.* openSSL/libssl.*
     fi
 
 deploy:
