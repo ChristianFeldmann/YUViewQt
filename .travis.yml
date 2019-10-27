@@ -31,13 +31,15 @@ install:
 script:
   - cd openSSL
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then ../buildWindows.bat; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       mkdir dist
       ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc
       make depend
       make
     fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       mkdir dist
       ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared linux-x86_64
       make depend
@@ -55,10 +57,7 @@ after_success:
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
       7z a $OUTPUT_ZIP_FILE openssl/include openSSL/libcrypto-1_1-x64.dll openSSL/libcrypto.lib openSSL/libssl-1_1-x64.dll openSSL/libssl.lib
     fi
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      zip -r $OUTPUT_ZIP_FILE openSSL/include openSSL/libcrypto.* openSSL/libssl.*
-    fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then zip -r $OUTPUT_ZIP_FILE openSSL/include openSSL/libcrypto.* openSSL/libssl.*; fi
 
 deploy:
   skip_cleanup: true
