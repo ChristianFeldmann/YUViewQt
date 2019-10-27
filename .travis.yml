@@ -9,6 +9,11 @@ matrix:
       env: 
         - OUTPUT_ZIP_FILE=Qtbase-5.13.1_win.zip
         - OPEN_SSL_FILE=openSSL_1_1_1_stable_win.zip
+    - os: linux
+      dist: trusty
+      env:
+        - OUTPUT_ZIP_FILE=Qtbase-5.13.1_ubuntu_trusty.zip
+        - OPEN_SSL_FILE=openSSL_1_1_1_stable_ubuntu_trusty.zip
 compiler:
   - gcc
 
@@ -48,12 +53,18 @@ script:
       make -j 2
       make install
     fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      ./configure -release -opensource -confirm-license -prefix /Users/travis/build/Qt -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/openSSL/ -nomake examples
+      make -j 2
+      make install
+    fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then ../buildWindows.bat; fi
   - cd ..
 
 after_success:
   - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    if [[ "$TRAVIS_OS_NAME" == "osx" || "$TRAVIS_OS_NAME" == "linux" ]]; then
       cd /Users/travis/build/
       zip --quiet -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qt/bin Qt/lib Qt/include Qt/mkspecs Qt/plugins
       ls /Users/travis/build/
