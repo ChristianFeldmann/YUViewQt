@@ -5,6 +5,7 @@ matrix:
       env: 
         - OUTPUT_ZIP_FILE=Qtbase-5.13.1_mac.zip
         - OPEN_SSL_FILE=openSSL_1_1_1_stable_mac.zip
+        - QT_INSTALL_DIR=/Users/travis/build/Qt
     - os: windows
       env: 
         - OUTPUT_ZIP_FILE=Qtbase-5.13.1_win.zip
@@ -14,6 +15,7 @@ matrix:
       env:
         - OUTPUT_ZIP_FILE=Qtbase-5.13.1_ubuntu_trusty.zip
         - OPEN_SSL_FILE=openSSL_1_1_1_stable_ubuntu_trusty.zip
+        - QT_INSTALL_DIR=/home/travis/build/Qt
 compiler:
   - gcc
 
@@ -43,19 +45,13 @@ install:
     fi
 
 script:
-  # Build QtBase and install it to /Users/travis/build/Qt
+  # Build QtBase and install
   - cd Qt_build
   # Hack to enable qtsync although we did not technically checkout from git
   - mkdir .git
   - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      ./configure -release -opensource -confirm-license -prefix /Users/travis/build/Qt -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/openSSL/ -nomake examples
-      make -j 2
-      make install
-    fi
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      ./configure -release -opensource -confirm-license -prefix /Users/travis/build/Qt -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/openSSL/ -nomake examples
+    if [[ "$TRAVIS_OS_NAME" == "osx" || "$TRAVIS_OS_NAME" == "linux" ]]; then
+      ./configure -release -opensource -confirm-license -prefix $QT_INSTALL_DIR -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/openSSL/ -nomake examples
       make -j 2
       make install
     fi
@@ -65,16 +61,15 @@ script:
 after_success:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" || "$TRAVIS_OS_NAME" == "linux" ]]; then
-      cd /Users/travis/build/
+      cd $QT_INSTALL_DIR/..
       zip --quiet -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qt/bin Qt/lib Qt/include Qt/mkspecs Qt/plugins
-      ls /Users/travis/build/
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
       cd /c/Users/travis/build
       7z a ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} Qt/bin Qt/lib Qt/include Qt/mkspecs Qt/plugins
-      ls /c/Users/travis/build
     fi
+  - ls -l
   - cd ${TRAVIS_BUILD_DIR}
   - ls -l
 
