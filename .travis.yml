@@ -79,7 +79,6 @@ after_success:
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
       # Cleanup of moc/obj/pch files
-      rm QtCharts/src/charts/.moc/release/*
       rm QtCharts/src/charts/.obj/release/*
       rm QtCharts/src/charts/.pch/release/*
       7z a ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} QtCharts
