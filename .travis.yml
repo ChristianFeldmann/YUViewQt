@@ -5,19 +5,28 @@ matrix:
       env: 
         - OUTPUT_ZIP_FILE=QtCharts-5.13.1_mac.zip
         - QT_FILE=Qtbase-5.13.1_mac.zip
+        - QT_INSTALL_DIR=/Users/travis/build
     - os: windows
       env: 
         - OUTPUT_ZIP_FILE=QtCharts-5.13.1_win.zip
         - QT_FILE=Qtbase-5.13.1_win.zip
+        - QT_INSTALL_DIR=/c/Users/travis/build
+    - os: linux
+      dist: trusty
+      env:
+        - OUTPUT_ZIP_FILE=QtCharts-5.13.1_ubuntu_trusty.zip
+        - QT_FILE=Qtbase-5.13.1_ubuntu_trusty.zip
+        - QT_INSTALL_DIR=/home/travis/build
+
 compiler:
-- gcc
+  - gcc
 
 install:
-  # Get the precompiled Qt libraries to the folder that they were installed in (/Users/travis/build/Qt)
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then cd /Users/travis/build; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then cd /c/Users/travis/build; fi
+  # Get the precompiled Qt libraries to the folder that they were installed in
+  - cd $QT_INSTALL_DIR
   - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.13.1/${QT_FILE} -o Qt.zip
   - unzip -q -a Qt.zip
+  - export PATH=$QT_INSTALL_DIR/Qt/bin:$PATH
   # Get QtCharts
   - cd $TRAVIS_BUILD_DIR
   - curl -L https://github.com/qt/qtcharts/archive/v5.13.1.zip -o Qtcharts.zip
@@ -25,7 +34,6 @@ install:
   - mv qtcharts-5.13.1 QtCharts
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-      choco install VisualCppBuildTools
       choco install strawberryperl
       export PATH=$PATH:";C:\Strawberry\perl\bin"
       # We have to remove this perl executable because it clashes with strawberry perl.
@@ -42,8 +50,8 @@ script:
   # Hack to enable qtsync although we did not technically checkout from git
   - mkdir .git
   - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      /Users/travis/build/Qt/bin/qmake
+    if [[ "$TRAVIS_OS_NAME" == "osx" || "$TRAVIS_OS_NAME" == "linux" ]]; then
+      qmake
       make -j 2
     fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then ../buildWindows.bat; fi
@@ -53,13 +61,12 @@ after_success:
   # Zip the whole QtCharts folder
   # This version of QtCharts is not yet installed so on the target build machine you have to run "make install"
   - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    if [[ "$TRAVIS_OS_NAME" == "osx" || "$TRAVIS_OS_NAME" == "linux" ]]; then
       # Cleanup of moc/obj/pch files
       rm QtCharts/src/charts/.moc/*
       rm QtCharts/src/charts/.obj/*
       rm QtCharts/src/charts/.pch/QtCharts/*
       zip --quiet -r ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} QtCharts
-      ls /Users/travis/build/
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
@@ -68,7 +75,6 @@ after_success:
       rm QtCharts/src/charts/.obj/release/*
       rm QtCharts/src/charts/.pch/release/*
       7z a ${TRAVIS_BUILD_DIR}/${OUTPUT_ZIP_FILE} QtCharts
-      ls /c/Users/travis/build
     fi
   - cd ${TRAVIS_BUILD_DIR}
   - ls -l
