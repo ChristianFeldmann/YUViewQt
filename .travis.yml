@@ -59,7 +59,7 @@ script:
   - mkdir .git
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" || "$TRAVIS_OS_NAME" == "linux" ]]; then
-      ./configure -release -opensource -confirm-license -prefix $QT_INSTALL_DIR -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/openSSL/ -nomake examples -qt-xcb
+      ./configure -release -opensource -confirm-license -prefix $QT_INSTALL_DIR -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/openSSL/ -nomake examples -system-xcb
       make -j 2
       make install
     fi
