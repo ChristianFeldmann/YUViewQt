@@ -12,10 +12,10 @@ matrix:
         - QT_FILE=Qtbase-5.13.1_win.zip
         - QT_INSTALL_DIR=/c/Users/travis/build
     - os: linux
-      dist: trusty
+      dist: xenial
       env:
-        - OUTPUT_ZIP_FILE=QtCharts-5.13.1_ubuntu_trusty.zip
-        - QT_FILE=Qtbase-5.13.1_ubuntu_trusty.zip
+        - OUTPUT_ZIP_FILE=QtCharts-5.13.1_ubuntu_xenial.zip
+        - QT_FILE=Qtbase-5.13.1_ubuntu_xenial.zip
         - QT_INSTALL_DIR=/home/travis/build
 
 compiler:
@@ -24,7 +24,7 @@ compiler:
 install:
   # Get the precompiled Qt libraries to the folder that they were installed in
   - cd $QT_INSTALL_DIR
-  - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.13.1/${QT_FILE} -o Qt.zip
+  - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/qtbasexcb/${QT_FILE} -o Qt.zip
   - unzip -q -a Qt.zip
   - export PATH=$QT_INSTALL_DIR/Qt/bin:$PATH
   # Get QtCharts
