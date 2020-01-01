@@ -24,7 +24,7 @@ compiler:
 install:
   # Get the precompiled Qt libraries to the folder that they were installed in
   - cd $QT_INSTALL_DIR
-  - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/qtbasexcb/${QT_FILE} -o Qt.zip
+  - curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.13.1/${QT_FILE} -o Qt.zip
   - unzip -q -a Qt.zip
   - export PATH=$QT_INSTALL_DIR/Qt/bin:$PATH
   # Get QtCharts
