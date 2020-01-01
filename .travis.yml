@@ -11,11 +11,12 @@ matrix:
         - OUTPUT_ZIP_FILE=Qtbase-5.13.1_win.zip
         - OPEN_SSL_FILE=openSSL_1_1_1_stable_win.zip
     - os: linux
-      dist: trusty
+      dist: xenial
       env:
-        - OUTPUT_ZIP_FILE=Qtbase-5.13.1_ubuntu_trusty.zip
-        - OPEN_SSL_FILE=openSSL_1_1_1_stable_ubuntu_trusty.zip
+        - OUTPUT_ZIP_FILE=Qtbase-5.13.1_ubuntu_xenial.zip
+        - OPEN_SSL_FILE=openSSL_1_1_1_stable_ubuntu_xenial.zip
         - QT_INSTALL_DIR=/home/travis/build/Qt
+
 compiler:
   - gcc
 
@@ -43,6 +44,14 @@ install:
       unset CXX
       unset CXX_FOR_BUILD
     fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      sudo cp /etc/apt/sources.list /etc/apt/sources.list~
+      sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
+      sudo apt-get update
+      sudo apt-get build-dep qt5-default
+      sudo apt-get install libxcb-xinerama0-dev
+    fi
 
 script:
   # Build QtBase and install
@@ -50,8 +59,14 @@ script:
   # Hack to enable qtsync although we did not technically checkout from git
   - mkdir .git
   - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" || "$TRAVIS_OS_NAME" == "linux" ]]; then
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       ./configure -release -opensource -confirm-license -prefix $QT_INSTALL_DIR -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/openSSL/ -nomake examples
+      make -j 2
+      make install
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      ./configure -release -opensource -confirm-license -prefix $QT_INSTALL_DIR -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/openSSL/ -nomake examples -system-xcb
       make -j 2
       make install
     fi
