@@ -11,12 +11,6 @@ matrix:
         - OUTPUT_ZIP_FILE=Qtbase-5.13.1_win.zip
         - OPEN_SSL_FILE=openSSL_1_1_1_stable_win.zip
     - os: linux
-      dist: trusty
-      env:
-        - OUTPUT_ZIP_FILE=Qtbase-5.13.1_ubuntu_trusty.zip
-        - OPEN_SSL_FILE=openSSL_1_1_1_stable_ubuntu_trusty.zip
-        - QT_INSTALL_DIR=/home/travis/build/Qt
-    - os: linux
       dist: xenial
       env:
         - OUTPUT_ZIP_FILE=Qtbase-5.13.1_ubuntu_xenial.zip
