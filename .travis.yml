@@ -12,10 +12,10 @@ matrix:
         - QT_FILE=Qtbase-5.13.1_win.zip
         - QT_INSTALL_DIR=/c/Users/travis/build
     - os: linux
-      dist: trusty
+      dist: xenial
       env:
-        - OUTPUT_ZIP_FILE=QtCharts-5.13.1_ubuntu_trusty.zip
-        - QT_FILE=Qtbase-5.13.1_ubuntu_trusty.zip
+        - OUTPUT_ZIP_FILE=QtCharts-5.13.1_ubuntu_xenial.zip
+        - QT_FILE=Qtbase-5.13.1_ubuntu_xenial.zip
         - QT_INSTALL_DIR=/home/travis/build
 
 compiler:
@@ -43,6 +43,14 @@ install:
       unset CC_FOR_BUILD
       unset CXX
       unset CXX_FOR_BUILD
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      sudo cp /etc/apt/sources.list /etc/apt/sources.list~
+      sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
+      sudo apt-get update
+      sudo apt-get build-dep qt5-default
+      sudo apt-get install libxcb-xinerama0-dev
     fi
 
 script:
