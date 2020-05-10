@@ -32,10 +32,10 @@ jobs:
         nasm --version
         choco install strawberryperl
         perl --version
-        unset CC
-        unset CC_FOR_BUILD
-        unset CXX
-        unset CXX_FOR_BUILD
+        set CC=
+        set CC_FOR_BUILD=
+        set CXX=
+        set CXX_FOR_BUILD=
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Build Windows
