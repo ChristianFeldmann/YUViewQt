@@ -10,13 +10,13 @@ jobs:
         os: ['ubuntu-16.04', 'windows-2019', 'macos-10.15']
         include: 
           - os: ubuntu-16.04
-            ARTIFACT_NAME: openSSL_1_1_1_stable_mac
+            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_trusty
             UNZIP_COMMAND: unzip -qa
           - os: windows-2019
-            ARTIFACT_NAME: openSSL_1_1_1_stable_win
+            ARTIFACT_NAME: openSSL_1_1_1g_win
             UNZIP_COMMAND: 7z x
           - os: macos-10.15
-            ARTIFACT_NAME: openSSL_1_1_1_stable_ubuntu_trusty
+            ARTIFACT_NAME: openSSL_1_1_1g_mac
             UNZIP_COMMAND: unzip -qa
             
     steps:
@@ -43,11 +43,11 @@ jobs:
         cd openSSL
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set PATH=%PATH%;"C:\Program Files\NASM"
-        C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
+        C:\Strawberry\perl\bin\perl.exe Configure --prefix=$PWD/dist VC-WIN64A
         nmake
         cd ..
         mkdir artifact
-        xcopy openSSL/include artifact /s /e
+        robocopy openSSL\include artifact\include /e
         copy openSSL/libcrypto-1_1-x64.dll artifact
         copy openSSL/libcrypto.lib artifact
         copy openSSL/libssl-1_1-x64.dll artifact
@@ -66,7 +66,7 @@ jobs:
         cd ..
         mkdir artifact
         cp -R openSSL/include artifact
-        cp openSSL/libcrypto* openSSL/libssl* artifact
+        cp openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
       if: matrix.os == 'macos-10.15'
     - name: Build Linux
       run: |
