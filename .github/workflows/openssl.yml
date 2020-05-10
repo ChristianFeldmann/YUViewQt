@@ -40,9 +40,9 @@ jobs:
       if: matrix.os == 'windows-2019'
     - name: Build Windows
       run: |
-        set PATH=%PATH%;";C:\Program Files\NASM"
         cd openSSL
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        set PATH=%PATH%;";C:\Program Files\NASM"
         C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
         nmake
       shell: cmd
