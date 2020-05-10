@@ -26,6 +26,7 @@ jobs:
         ${{matrix.UNZIP_COMMAND}} openSSL.zip
         mv openssl-OpenSSL_1_1_1-stable openSSL
         ls
+        cd openSSL
     - name: Build Linux/Mac
       run: |
         choco install nasm
