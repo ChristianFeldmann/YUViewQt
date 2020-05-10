@@ -25,9 +25,7 @@ jobs:
         curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1-stable.zip -o openSSL.zip
         ${{matrix.UNZIP_COMMAND}} openSSL.zip
         mv openssl-OpenSSL_1_1_1-stable openSSL
-        ls
-        cd openSSL
-    - name: Build Linux/Mac
+    - name: Install windows dependencies
       run: |
         choco install nasm
         export PATH=$PATH:";C:\Program Files\NASM"
@@ -38,6 +36,7 @@ jobs:
         unset CC_FOR_BUILD
         unset CXX
         unset CXX_FOR_BUILD
+      shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Build Windows
       run: |
