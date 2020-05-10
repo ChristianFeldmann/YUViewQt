@@ -62,6 +62,9 @@ jobs:
         mkdir dist
         pwd
         ls
+        cd openSSL
+        pwd
+        ls
         ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared linux-x86_64
         make depend
         make -j 2
