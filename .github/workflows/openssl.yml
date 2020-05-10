@@ -28,7 +28,7 @@ jobs:
     - name: Install windows dependencies
       run: |
         choco install nasm
-        export PATH=$PATH:";C:\Program Files\NASM"
+        set PATH=%PATH%;";C:\Program Files\NASM"
         nasm --version
         choco install strawberryperl
         perl --version
