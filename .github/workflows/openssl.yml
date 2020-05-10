@@ -45,21 +45,19 @@ jobs:
         nmake
       shell: cmd
       if: matrix.os == 'windows-2019'
-    - name: Build Linux/Mac
+    - name: Build Mac
       run: |
         mkdir dist
         ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc
         make depend
         make
-      shell: cmd
       if: matrix.os == 'macos-10.15'
-    - name: Build Linux/Mac
+    - name: Build Linux
       run: |
         mkdir dist
         ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared linux-x86_64
         make depend
         make -j 2
-      shell: cmd
       if: matrix.os == 'ubuntu-16.04'
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
