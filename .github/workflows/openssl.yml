@@ -10,21 +10,21 @@ jobs:
         os: ['ubuntu-16.04', 'windows-2019', 'macos-10.15']
         include: 
           - os: ubuntu-16.04
-            OUTPUT_ZIP_FILE: openSSL_1_1_1_stable_mac
+            ARTIFACT_NAME: openSSL_1_1_1_stable_mac
             UNZIP_COMMAND: unzip -qa
           - os: windows-2019
-            OUTPUT_ZIP_FILE: openSSL_1_1_1_stable_win
+            ARTIFACT_NAME: openSSL_1_1_1_stable_win
             UNZIP_COMMAND: 7z x
           - os: macos-10.15
-            OUTPUT_ZIP_FILE: openSSL_1_1_1_stable_ubuntu_trusty
+            ARTIFACT_NAME: openSSL_1_1_1_stable_ubuntu_trusty
             UNZIP_COMMAND: unzip -qa
             
     steps:
     - name: Download sources
       run: |
-        curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1-stable.zip -o openSSL.zip
+        curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1g.zip -o openSSL.zip
         ${{matrix.UNZIP_COMMAND}} openSSL.zip
-        mv openssl-OpenSSL_1_1_1-stable openSSL
+        mv openssl-OpenSSL_1_1_1g openSSL
     - name: Install windows dependencies
       run: |
         choco install nasm
@@ -45,6 +45,13 @@ jobs:
         set PATH=%PATH%;"C:\Program Files\NASM"
         C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
         nmake
+        cd ..
+        mkdir artifact
+        xcopy openSSL/include artifact /s /e
+        copy openSSL/libcrypto-1_1-x64.dll artifact
+        copy openSSL/libcrypto.lib artifact
+        copy openSSL/libssl-1_1-x64.dll artifact
+        copy openSSL/libssl.lib artifact
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Build Mac
@@ -55,7 +62,11 @@ jobs:
         ls
         ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc
         make depend
-        make
+        make -j 2
+        cd ..
+        mkdir artifact
+        cp -R openSSL/include artifact
+        cp openSSL/libcrypto* openSSL/libssl* artifact
       if: matrix.os == 'macos-10.15'
     - name: Build Linux
       run: |
@@ -68,12 +79,16 @@ jobs:
         ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared linux-x86_64
         make depend
         make -j 2
+        cd ..
+        mkdir artifact
+        cp -R openSSL/include artifact
+        cp openSSL/libcrypto.* openSSL/libssl.* artifact
       if: matrix.os == 'ubuntu-16.04'
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: ${{matrix.ARTIFACT_NAME}}
-        path: openSSL
+        path: artifact
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
