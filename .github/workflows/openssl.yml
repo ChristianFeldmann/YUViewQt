@@ -43,8 +43,8 @@ jobs:
         cd openSSL
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set PATH=%PATH%;"C:\Program Files\NASM"
-        echo C:\Strawberry\perl\bin\perl.exe Configure --prefix=$HOME\openSSL\dist VC-WIN64A
-        C:\Strawberry\perl\bin\perl.exe Configure --prefix="$HOME\openSSL\dist" VC-WIN64A
+        echo C:\Strawberry\perl\bin\perl.exe Configure --prefix=${HOME}\openSSL\dist VC-WIN64A
+        C:\Strawberry\perl\bin\perl.exe Configure --prefix="${HOME}\openSSL\dist" VC-WIN64A
         nmake
         cd ..
         mkdir artifact
