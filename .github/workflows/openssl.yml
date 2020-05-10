@@ -27,7 +27,7 @@ jobs:
         mv openssl-OpenSSL_1_1_1-stable openSSL
     - name: Install windows dependencies
       run: |
-        choco -v install nasm
+        choco install nasm -v
         set PATH=%PATH%;";C:\Program Files\NASM"
         nasm --version
         choco install strawberryperl
