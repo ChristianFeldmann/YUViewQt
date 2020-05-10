@@ -1,0 +1,71 @@
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ['ubuntu-16.04', 'windows-2019', 'macos-10.15']
+        include: 
+          - os: ubuntu-16.04
+            OUTPUT_ZIP_FILE: openSSL_1_1_1_stable_mac
+            UNZIP_COMMAND: unzip -qa
+          - os: windows-2019
+            OUTPUT_ZIP_FILE: openSSL_1_1_1_stable_win
+            UNZIP_COMMAND: 7z x
+          - os: macos-10.15
+            OUTPUT_ZIP_FILE: openSSL_1_1_1_stable_ubuntu_trusty
+            UNZIP_COMMAND: unzip -qa
+            
+    steps:
+    - name: Download sources
+      run: |
+        curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1-stable.zip -o openSSL.zip
+        ${{matrix.UNZIP_COMMAND}} openSSL.zip
+        mv openssl-OpenSSL_1_1_1-stable openSSL
+        ls
+    - name: Build Linux/Mac
+      run: |
+        choco install nasm
+        export PATH=$PATH:";C:\Program Files\NASM"
+        nasm --version
+        choco install strawberryperl
+        perl --version
+        unset CC
+        unset CC_FOR_BUILD
+        unset CXX
+        unset CXX_FOR_BUILD
+      if: matrix.os == 'windows-2019'
+    - name: Build Windows
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
+        nmake
+      shell: cmd
+      if: matrix.os == 'windows-2019'
+    - name: Build Linux/Mac
+      run: |
+        mkdir dist
+        ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc
+        make depend
+        make
+      shell: cmd
+      if: matrix.os == 'macos-10.15'
+    - name: Build Linux/Mac
+      run: |
+        mkdir dist
+        ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared linux-x86_64
+        make depend
+        make -j 2
+      shell: cmd
+      if: matrix.os == 'ubuntu-16.04'
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{matrix.ARTIFACT_NAME}}
+        path: openSSL
+
+  # How to upload files to the release:
+  # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
