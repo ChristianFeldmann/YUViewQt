@@ -41,6 +41,7 @@ jobs:
       if: matrix.os == 'windows-2019'
     - name: Build Windows
       run: |
+        cd openSSL
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
         nmake
@@ -49,6 +50,9 @@ jobs:
     - name: Build Mac
       run: |
         mkdir dist
+        cd openSSL
+        pwd
+        ls
         ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc
         make depend
         make
@@ -56,6 +60,8 @@ jobs:
     - name: Build Linux
       run: |
         mkdir dist
+        pwd
+        ls
         ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared linux-x86_64
         make depend
         make -j 2
