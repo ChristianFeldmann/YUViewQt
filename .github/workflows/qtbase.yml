@@ -16,11 +16,11 @@ jobs:
         os: ['ubuntu-16.04', 'ubuntu-18.04', 'windows-2019', 'macos-10.15']
         include: 
           - os: ubuntu-16.04
-            OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_trusty.zip
+            OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_xenial.zip
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
           - os: ubuntu-18.04
-            OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_xenial.zip
+            OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_bionic.zip
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
           - os: windows-2019
@@ -35,11 +35,11 @@ jobs:
     - name: Download QtBase Sources
       run: |
         curl -L https://github.com/qt/qtbase/archive/v5.13.1.zip -o QtBase.zip
-        ${{matrix.UNZIP_COMMAND}} Qtbase.zip
+        ${{matrix.UNZIP_COMMAND}} QtBase.zip
         mv qtbase-5.13.1 Qt_build
     - name: Download precompiled openSSL
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSLg1.1.1/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
         ${{matrix.UNZIP_COMMAND}} openSSL.zip
     - name: Install windows dependencies
       run: |
