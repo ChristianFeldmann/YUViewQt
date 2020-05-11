@@ -16,11 +16,11 @@ jobs:
         os: ['ubuntu-16.04', 'ubuntu-18.04', 'windows-2019', 'macos-10.15']
         include: 
           - os: ubuntu-16.04
-            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_trusty
+            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_xenial
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
           - os: ubuntu-18.04
-            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_xenial
+            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_bionic
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
           - os: windows-2019
