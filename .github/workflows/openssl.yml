@@ -18,16 +18,19 @@ jobs:
           - os: ubuntu-16.04
             ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_trusty
             UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
           - os: ubuntu-18.04
             ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_xenial
             UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
           - os: windows-2019
             ARTIFACT_NAME: openSSL_1_1_1g_win
             UNZIP_COMMAND: 7z x
+            ZIP_COMMAND: 7z a -r
           - os: macos-10.15
             ARTIFACT_NAME: openSSL_1_1_1g_mac
             UNZIP_COMMAND: unzip -qa
-            
+            ZIP_COMMAND: zip -r
     steps:
     - name: Download sources
       run: |
@@ -98,14 +101,16 @@ jobs:
       with:
         name: ${{matrix.ARTIFACT_NAME}}
         path: artifact
+    - name: Zip files
+      run: ${{matrix.ZIP_COMMAND}} ${{matrix.ARTIFACT_NAME}}.zip artifact
     - name: Upload
       uses: actions/upload-release-asset@v1.0.1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ${{matrix.ARTIFACT_NAME}}
-        asset_name: ${{matrix.ARTIFACT_NAME}}
+        upload_url: ${{github.event.release.upload_url}}
+        asset_path: ${{matrix.ARTIFACT_NAME}}.zip
+        asset_name: ${{matrix.ARTIFACT_NAME}}.zip
         asset_content_type: application/zip
       if: github.event_name == 'release'
 
