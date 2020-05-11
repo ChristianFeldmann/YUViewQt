@@ -40,6 +40,7 @@ jobs:
     - name: Download precompiled openSSL
       run: |
         curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSLg1.1.1/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
+        ls -l
         ${{matrix.UNZIP_COMMAND}} openSSL.zip
     - name: Install windows dependencies
       run: |
