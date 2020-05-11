@@ -1,6 +1,6 @@
 name: C/C++ CI
 
-on: [push]
+on: [push, release]
 
 jobs:
   build:
@@ -101,6 +101,7 @@ jobs:
         asset_path: artifact
         asset_name: ${{matrix.ARTIFACT_NAME}}
         asset_content_type: application/zip
+      if: github.event_name == 'release'
 
 
   # How to upload files to the release:
