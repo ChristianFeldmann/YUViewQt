@@ -1,0 +1,114 @@
+name: C/C++ CI
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
+  push:
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ['ubuntu-16.04', 'ubuntu-18.04', 'windows-2019', 'macos-10.15']
+        include: 
+          - os: ubuntu-16.04
+            OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_trusty.zip
+            UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
+          - os: ubuntu-18.04
+            OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_xenial.zip
+            UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
+          - os: windows-2019
+            OPEN_SSL_FILE: openSSL_1_1_1g_win.zip
+            UNZIP_COMMAND: 7z x
+            ZIP_COMMAND: 7z a -r
+          - os: macos-10.15
+            OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
+            UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
+    steps:
+    - name: Download QtBase Sources
+      run: |
+        curl -L https://github.com/qt/qtbase/archive/v5.13.1.zip -o QtBase.zip
+        ${{matrix.UNZIP_COMMAND}} Qtbase.zip
+        mv qtbase-5.13.1 Qt_build
+    - name: Download precompiled openSSL
+      run: |
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
+        ${{matrix.UNZIP_COMMAND}} openSSL.zip
+    - name: Install windows dependencies
+      run: |
+        choco install winflexbison3
+        choco install jom
+        choco install VisualCppBuildTools
+        choco install strawberryperl
+        export PATH=$PATH:";C:\Strawberry\perl\bin"
+        # We have to remove this perl executable because it clashes with strawberry perl.
+        # Strawberry perl is needed because the perl version that comes with git is too old to compile Qt
+        rm 'C:\Program Files\Git\usr\bin\perl.exe'
+        unset CC
+        unset CC_FOR_BUILD
+        unset CXX
+        unset CXX_FOR_BUILD
+      shell: cmd
+      if: matrix.os == 'windows-2019'
+    - name: Install Linux Dependencies
+      run: |
+        sudo cp /etc/apt/sources.list /etc/apt/sources.list~
+        sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
+        sudo apt-get update
+        sudo apt-get build-dep qt5-default
+        sudo apt-get install libxcb-xinerama0-dev
+      if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
+    - name: Build Windows
+      run: |
+        cd Qt_build
+        copy C:\ProgramData\chocolatey\bin\win_flex.exe C:\ProgramData\chocolatey\bin\flex.exe
+        copy C:\ProgramData\chocolatey\bin\win_bison.exe C:\ProgramData\chocolatey\bin\bison.exe
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        call .\configure.bat -release -opensource -confirm-license -prefix "$HOME\build\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-IC:\Users\travis\build\ChristianFeldmann\YUViewQt\openSSL\include" "-LC:\Users\travis\build\ChristianFeldmann\YUViewQt\openSSL" -nomake examples -nomake tests -no-feature-sql -no-direct2d
+        jom
+        jom install
+      shell: cmd
+      if: matrix.os == 'windows-2019'
+    - name: Build Mac
+      run: |
+        cd Qt_build
+        ./configure -release -opensource -confirm-license -prefix $QT_INSTALL_DIR -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/openSSL/ -nomake examples
+        make -j 2
+        make install
+      if: matrix.os == 'macos-10.15'
+    - name: Build Linux
+      run: |
+        cd Qt_build
+        ./configure -release -opensource -confirm-license -prefix $QT_INSTALL_DIR -openssl -I ${TRAVIS_BUILD_DIR}/openSSL/include/ -L ${TRAVIS_BUILD_DIR}/openSSL/ -nomake examples -system-xcb
+        make -j 2
+        make install
+      if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
+    # - name: Upload Artifact
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: ${{matrix.ARTIFACT_NAME}}
+    #     path: artifact
+    # - name: Zip files
+    #   run: ${{matrix.ZIP_COMMAND}} ${{matrix.ARTIFACT_NAME}}.zip artifact
+    # - name: Upload
+    #   uses: actions/upload-release-asset@v1.0.1
+    #   env:
+    #     GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    #   with:
+    #     upload_url: ${{github.event.release.upload_url}}
+    #     asset_path: ${{matrix.ARTIFACT_NAME}}.zip
+    #     asset_name: ${{matrix.ARTIFACT_NAME}}.zip
+    #     asset_content_type: application/zip
+    #   if: github.event_name == 'release'
+
+  # How to upload files to the release:
+  # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
+  # This is something but is looks ugly
+  # https://github.com/actions/upload-release-asset/issues/17
