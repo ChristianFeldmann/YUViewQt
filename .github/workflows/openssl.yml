@@ -1,0 +1,120 @@
+name: C/C++ CI
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
+  push:
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ['ubuntu-16.04', 'ubuntu-18.04', 'windows-2019', 'macos-10.15']
+        include: 
+          - os: ubuntu-16.04
+            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_trusty
+            UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
+          - os: ubuntu-18.04
+            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_xenial
+            UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
+          - os: windows-2019
+            ARTIFACT_NAME: openSSL_1_1_1g_win
+            UNZIP_COMMAND: 7z x
+            ZIP_COMMAND: 7z a -r
+          - os: macos-10.15
+            ARTIFACT_NAME: openSSL_1_1_1g_mac
+            UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
+    steps:
+    - name: Download sources
+      run: |
+        curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1g.zip -o openSSL.zip
+        ${{matrix.UNZIP_COMMAND}} openSSL.zip
+        mv openssl-OpenSSL_1_1_1g openSSL
+    - name: Install windows dependencies
+      run: |
+        choco install nasm
+        set PATH=%PATH%;"C:\Program Files\NASM"
+        nasm --version
+        choco install strawberryperl
+        perl --version
+        set CC=
+        set CC_FOR_BUILD=
+        set CXX=
+        set CXX_FOR_BUILD=
+      shell: cmd
+      if: matrix.os == 'windows-2019'
+    - name: Build Windows
+      run: |
+        cd openSSL
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        set PATH=%PATH%;"C:\Program Files\NASM"
+        C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
+        nmake
+        cd ..
+        mkdir artifact
+        robocopy openSSL\include artifact\include /e
+        copy openSSL\libcrypto-1_1-x64.dll artifact
+        copy openSSL\libcrypto.lib artifact
+        copy openSSL\libssl-1_1-x64.dll artifact
+        copy openSSL\libssl.lib artifact
+      shell: cmd
+      if: matrix.os == 'windows-2019'
+    - name: Build Mac
+      run: |
+        mkdir dist
+        cd openSSL
+        pwd
+        ls
+        ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc
+        make depend
+        make -j 2
+        cd ..
+        mkdir artifact
+        cp -R openSSL/include artifact
+        cp openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
+      if: matrix.os == 'macos-10.15'
+    - name: Build Linux
+      run: |
+        mkdir dist
+        pwd
+        ls
+        cd openSSL
+        pwd
+        ls
+        ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared linux-x86_64
+        make depend
+        make -j 2
+        cd ..
+        mkdir artifact
+        cp -R openSSL/include artifact
+        cp openSSL/libcrypto.* openSSL/libssl.* artifact
+      if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{matrix.ARTIFACT_NAME}}
+        path: artifact
+    - name: Zip files
+      run: ${{matrix.ZIP_COMMAND}} ${{matrix.ARTIFACT_NAME}}.zip artifact
+    - name: Upload
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        upload_url: ${{github.event.release.upload_url}}
+        asset_path: ${{matrix.ARTIFACT_NAME}}.zip
+        asset_name: ${{matrix.ARTIFACT_NAME}}.zip
+        asset_content_type: application/zip
+      if: github.event_name == 'release'
+
+  # How to upload files to the release:
+  # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
+  # This is something but is looks ugly
+  # https://github.com/actions/upload-release-asset/issues/17
