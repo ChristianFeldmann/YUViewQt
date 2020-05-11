@@ -7,9 +7,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ['ubuntu-16.04', 'windows-2019', 'macos-10.15']
+        os: ['ubuntu-16.04', 'ubuntu-18.04', 'windows-2019', 'macos-10.15']
         include: 
           - os: ubuntu-16.04
+            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_trusty
+            UNZIP_COMMAND: unzip -qa
+          - os: ubuntu-18.04
             ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_trusty
             UNZIP_COMMAND: unzip -qa
           - os: windows-2019
@@ -83,7 +86,7 @@ jobs:
         mkdir artifact
         cp -R openSSL/include artifact
         cp openSSL/libcrypto.* openSSL/libssl.* artifact
-      if: matrix.os == 'ubuntu-16.04'
+      if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
