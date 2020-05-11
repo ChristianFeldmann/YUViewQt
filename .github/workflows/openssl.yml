@@ -13,7 +13,7 @@ jobs:
             ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_trusty
             UNZIP_COMMAND: unzip -qa
           - os: ubuntu-18.04
-            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_trusty
+            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_xenial
             UNZIP_COMMAND: unzip -qa
           - os: windows-2019
             ARTIFACT_NAME: openSSL_1_1_1g_win
