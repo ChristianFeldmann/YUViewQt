@@ -1,6 +1,13 @@
 name: C/C++ CI
 
 on: [push, release]
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
+  push:
+  release:
+    types:
+      - published
 
 jobs:
   build:
@@ -98,11 +105,12 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: artifact
+        asset_path: ${{matrix.ARTIFACT_NAME}}
         asset_name: ${{matrix.ARTIFACT_NAME}}
         asset_content_type: application/zip
       if: github.event_name == 'release'
 
-
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
+  # This is something but is looks ugly
+  # https://github.com/actions/upload-release-asset/issues/17
