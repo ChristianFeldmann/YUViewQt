@@ -92,6 +92,16 @@ jobs:
       with:
         name: ${{matrix.ARTIFACT_NAME}}
         path: artifact
+    - name: Upload
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: artifact
+        asset_name: ${{matrix.ARTIFACT_NAME}}
+        asset_content_type: application/zip
+
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
