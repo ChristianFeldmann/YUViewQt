@@ -35,12 +35,13 @@ jobs:
     steps:
     - name: Download precompiled openSSL
       run: |
-        ls
+        dir
         echo curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSLg1.1.1/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
         curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSLg1.1.1/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
         echo Download done
-        ls
+        dir
         ${{matrix.UNZIP_COMMAND}} openSSL.zip
+        shell: cmd
     - name: Download QtBase Sources
       run: |
         curl -L https://github.com/qt/qtbase/archive/v5.13.1.zip -o QtBase.zip
