@@ -84,7 +84,10 @@ jobs:
       if: matrix.os == 'macos-10.15'
     - name: Build Linux
       run: |
+        pwd
+        ls
         cd Qt_build
+        echo ./configure -release -opensource -confirm-license -prefix $QT_INSTALL_DIR -openssl -I ${GITHUB_WORKSPACE}/openSSL/include/ -L ${GITHUB_WORKSPACE}/openSSL/ -nomake examples -system-xcb
         ./configure -release -opensource -confirm-license -prefix $QT_INSTALL_DIR -openssl -I ${GITHUB_WORKSPACE}/openSSL/include/ -L ${GITHUB_WORKSPACE}/openSSL/ -nomake examples -system-xcb
         make -j 2
         make install
