@@ -41,7 +41,7 @@ jobs:
         echo Download done
         dir
         ${{matrix.UNZIP_COMMAND}} openSSL.zip
-        shell: cmd
+      shell: cmd
     - name: Download QtBase Sources
       run: |
         curl -L https://github.com/qt/qtbase/archive/v5.13.1.zip -o QtBase.zip
