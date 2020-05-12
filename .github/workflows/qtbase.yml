@@ -22,10 +22,10 @@ jobs:
             OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_bionic.zip
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
-          - os: windows-2019
-            OPEN_SSL_FILE: openSSL_1_1_1g_win.zip
-            UNZIP_COMMAND: 7z x
-            ZIP_COMMAND: 7z a -r
+          # - os: windows-2019
+          #   OPEN_SSL_FILE: openSSL_1_1_1g_win.zip
+          #   UNZIP_COMMAND: 7z x
+          #   ZIP_COMMAND: 7z a -r
           # - os: macos-10.15
           #   OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
           #   UNZIP_COMMAND: unzip -qa
@@ -58,7 +58,7 @@ jobs:
         sudo cp /etc/apt/sources.list /etc/apt/sources.list~
         sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
         sudo apt-get update
-        sudo apt-get build-dep qt5-default
+        sudo apt-get build-dep
         sudo apt-get install libxcb-xinerama0-dev
       if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
     - name: Build Windows
@@ -75,6 +75,9 @@ jobs:
     - name: Build Mac
       run: |
         cd Qt_build
+        pwd
+        ls
+        echo ./configure -release -opensource -confirm-license -prefix $QT_INSTALL_DIR -openssl -I ${GITHUB_WORKSPACE}/openSSL/include/ -L ${GITHUB_WORKSPACE}/openSSL/ -nomake examples
         ./configure -release -opensource -confirm-license -prefix $QT_INSTALL_DIR -openssl -I ${GITHUB_WORKSPACE}/openSSL/include/ -L ${GITHUB_WORKSPACE}/openSSL/ -nomake examples
         make -j 2
         make install
