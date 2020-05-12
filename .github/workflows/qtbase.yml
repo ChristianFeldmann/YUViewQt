@@ -24,28 +24,31 @@ jobs:
             OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_bionic.zip
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
-            SHELL: bash
           - os: windows-2019
             OPEN_SSL_FILE: openSSL_1_1_1g_win.zip
             UNZIP_COMMAND: 7z x
             ZIP_COMMAND: 7z a -r
-            SHELL: cmd
           # - os: macos-10.15
           #   OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
           #   UNZIP_COMMAND: unzip -qa
           #   ZIP_COMMAND: zip -r
     steps:
-    - name: Download precompiled openSSL
+    - name: Download precompiled openSSL (windows)
       run: |
         curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSLg1.1.1/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
         ${{matrix.UNZIP_COMMAND}} openSSL.zip
-      shell: ${{matrix.SHELL}}
+      shell: cmd
+      if: matrix.os == 'windows-2019'
+    - name: Download precompiled openSSL (other)
+      run: |
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSLg1.1.1/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
+        ${{matrix.UNZIP_COMMAND}} openSSL.zip
+      if: matrix.os != 'windows-2019'
     - name: Download QtBase Sources
       run: |
         curl -L https://github.com/qt/qtbase/archive/v5.13.1.zip -o QtBase.zip
         ${{matrix.UNZIP_COMMAND}} QtBase.zip
         mv qtbase-5.13.1 Qt_build
-      shell: ${{matrix.SHELL}}
     - name: Install windows dependencies
       run: |
         choco install winflexbison3
