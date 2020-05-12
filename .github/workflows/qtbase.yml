@@ -58,7 +58,7 @@ jobs:
         sudo cp /etc/apt/sources.list /etc/apt/sources.list~
         sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
         sudo apt-get update
-        sudo apt-get build-dep
+        sudo apt-get build-dep qt5-default
         sudo apt-get install libxcb-xinerama0-dev
       if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
     - name: Build Windows
