@@ -27,7 +27,6 @@ jobs:
           #   ARTIFACT_NAME: qtBase_5.14.2_bionic
           #   CONFIGURE_EXTRA: -qt-xcb
           - os: windows-2019
-            OPEN_SSL_FILE: openSSL_1_1_1g_win.zip
             UNZIP_COMMAND: 7z x
             ZIP_COMMAND: 7z a -r
             ARTIFACT_NAME: qtBase_5.14.2_win
@@ -40,7 +39,7 @@ jobs:
     steps:
     - name: Download precompiled openSSL (windows)
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1g/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1g/openSSL_1_1_1g_win.zip -o openSSL.zip
         7z x openSSL.zip -oopenSSL
       shell: cmd
       if: matrix.os == 'windows-2019'
@@ -65,12 +64,14 @@ jobs:
       if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
     - name: Build Windows
       run: |
+        dir
         cd Qt_build
         mkdir .git
         copy C:\ProgramData\chocolatey\bin\win_flex.exe C:\ProgramData\chocolatey\bin\flex.exe
         copy C:\ProgramData\chocolatey\bin\win_bison.exe C:\ProgramData\chocolatey\bin\bison.exe
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        call .\configure.bat -release -opensource -confirm-license -prefix "$GITHUB_WORKSPACE\build\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-I$GITHUB_WORKSPACE\openSSL\include" "-L$GITHUB_WORKSPACE\openSSL" -nomake examples -nomake tests -no-feature-sql -no-direct2d
+        echo call .\configure.bat -release -opensource -confirm-license -prefix "${GITHUB_WORKSPACE}\build\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-I${GITHUB_WORKSPACE}\openSSL\include" "-L${GITHUB_WORKSPACE}\openSSL" -nomake examples -nomake tests -no-feature-sql -no-direct2d
+        call .\configure.bat -release -opensource -confirm-license -prefix "${GITHUB_WORKSPACE}\build\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-I${GITHUB_WORKSPACE}\openSSL\include" "-L${GITHUB_WORKSPACE}\openSSL" -nomake examples -nomake tests -no-feature-sql -no-direct2d
         jom
         jom install
       shell: cmd
