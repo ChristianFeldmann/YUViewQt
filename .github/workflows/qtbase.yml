@@ -93,11 +93,14 @@ jobs:
         mkdir Qt
         cp -R Qt_install/bin Qt_install/lib Qt_install/include Qt_install/mkspecs Qt_install/plugins Qt
       if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
+    - name: Zip files
+      run: |
+        ${{matrix.ZIP_COMMAND}} ${{matrix.ARTIFACT_NAME}}.zip Qt
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: ${{matrix.ARTIFACT_NAME}}
-        path: Qt
+        path: ${{matrix.ARTIFACT_NAME}}.zip
     
     # - name: Upload
     #   uses: actions/upload-release-asset@v1.0.1
