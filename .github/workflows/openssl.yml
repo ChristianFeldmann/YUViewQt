@@ -102,7 +102,7 @@ jobs:
         name: ${{matrix.ARTIFACT_NAME}}
         path: artifact
     - name: Zip files
-      run: ${{matrix.ZIP_COMMAND}} ${{matrix.ARTIFACT_NAME}}.zip artifact
+      run: ${{matrix.ZIP_COMMAND}} ${{matrix.ARTIFACT_NAME}}.zip artifact/*
     - name: Upload
       uses: actions/upload-release-asset@v1.0.1
       env:
