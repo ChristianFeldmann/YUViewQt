@@ -33,13 +33,13 @@ jobs:
     steps:
     - name: Download precompiled openSSL (windows)
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openssl1.1.1g/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1g/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
         7z x openSSL.zip -oopenSSL
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Download precompiled openSSL (other)
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openssl1.1.1g/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1g/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
         unzip -qa openSSL.zip -d openSSL
       if: matrix.os != 'windows-2019'
     - name: Download QtBase Sources
@@ -53,14 +53,9 @@ jobs:
         choco install jom
       shell: cmd
       if: matrix.os == 'windows-2019'
-    # - name: Install Linux Dependencies
-    #   run: |
-    #     sudo cp /etc/apt/sources.list /etc/apt/sources.list~
-    #     sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
-    #     sudo apt-get update
-    #     sudo apt-get build-dep qt5-default
-    #     sudo apt-get install libxcb-xinerama0-dev
-    #   if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
+    - name: Install Linux Dependencies
+      run: sudo apt install build-essential perl python git '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev libatspi2.0-0
+      if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
     - name: Build Windows
       run: |
         cd Qt_build
