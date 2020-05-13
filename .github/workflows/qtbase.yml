@@ -34,13 +34,13 @@ jobs:
     - name: Download precompiled openSSL (windows)
       run: |
         curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSLg1.1.1/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
-        ${{matrix.UNZIP_COMMAND}} openSSL.zip
+        7z x openSSL.zip -oopenSSL
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Download precompiled openSSL (other)
       run: |
         curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSLg1.1.1/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
-        ${{matrix.UNZIP_COMMAND}} openSSL.zip
+        unzip -qa openSSL.zip -d openSSL
       if: matrix.os != 'windows-2019'
     - name: Download QtBase Sources
       run: |
