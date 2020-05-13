@@ -19,20 +19,24 @@ jobs:
           #   UNZIP_COMMAND: unzip -qa
           #   ZIP_COMMAND: zip -r
           #   ARTIFACT_NAME: qtBase_5.14.2_xenial
+          #   CONFIGURE_EXTRA: -qt-xcb
           # - os: ubuntu-18.04
           #   OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_bionic.zip
           #   UNZIP_COMMAND: unzip -qa
           #   ZIP_COMMAND: zip -r
           #   ARTIFACT_NAME: qtBase_5.14.2_bionic
-          # - os: windows-2019
-          #   OPEN_SSL_FILE: openSSL_1_1_1g_win.zip
-          #   UNZIP_COMMAND: 7z x
-          #   ZIP_COMMAND: 7z a -r
-          - os: macos-10.15
-            OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
-            UNZIP_COMMAND: unzip -qa
-            ZIP_COMMAND: zip -r
-            ARTIFACT_NAME: qtBase_5.14.2_mac
+          #   CONFIGURE_EXTRA: -qt-xcb
+          - os: windows-2019
+            OPEN_SSL_FILE: openSSL_1_1_1g_win.zip
+            UNZIP_COMMAND: 7z x
+            ZIP_COMMAND: 7z a -r
+            ARTIFACT_NAME: qtBase_5.14.2_win
+          # - os: macos-10.15
+          #   OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
+          #   UNZIP_COMMAND: unzip -qa
+          #   ZIP_COMMAND: zip -r
+          #   ARTIFACT_NAME: qtBase_5.14.2_mac
+          #   CONFIGURE_EXTRA: 
     steps:
     - name: Download precompiled openSSL (windows)
       run: |
@@ -71,28 +75,17 @@ jobs:
         jom install
       shell: cmd
       if: matrix.os == 'windows-2019'
-    - name: Build Mac
+    - name: Build Mac/Linux
       run: |
         cd Qt_build
         mkdir .git
-        ./configure -release -opensource -confirm-license -prefix ${GITHUB_WORKSPACE}/Qt_install -openssl -I ${GITHUB_WORKSPACE}/openSSL/include/ -L ${GITHUB_WORKSPACE}/openSSL/ -nomake examples
+        ./configure -release -opensource -confirm-license -prefix ${GITHUB_WORKSPACE}/Qt_install -openssl -I ${GITHUB_WORKSPACE}/openSSL/include/ -L ${GITHUB_WORKSPACE}/openSSL/ -nomake examples ${{matrix.CONFIGURE_EXTRA}}
         make -j 2
         make install
         cd ..
         mkdir Qt
         cp -R Qt_install/bin Qt_install/lib Qt_install/include Qt_install/mkspecs Qt_install/plugins Qt
-      if: matrix.os == 'macos-10.15'
-    - name: Build Linux
-      run: |
-        cd Qt_build
-        mkdir .git
-        ./configure -release -opensource -confirm-license -prefix ${GITHUB_WORKSPACE}/Qt_install -openssl -I ${GITHUB_WORKSPACE}/openSSL/include/ -L ${GITHUB_WORKSPACE}/openSSL/ -nomake examples -qt-xcb
-        make -j 2
-        make install
-        cd ..
-        mkdir Qt
-        cp -R Qt_install/bin Qt_install/lib Qt_install/include Qt_install/mkspecs Qt_install/plugins Qt
-      if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
+      if: matrix.os != 'windows-2019'
     - name: Zip files
       run: |
         ${{matrix.ZIP_COMMAND}} ${{matrix.ARTIFACT_NAME}}.zip Qt
