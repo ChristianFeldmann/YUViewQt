@@ -69,6 +69,7 @@ jobs:
         call .\configure.bat -release -opensource -confirm-license -prefix "d:\\a\YUViewQt\\YUViewQt\\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-Id:\\a\\YUViewQt\\YUViewQt\\openSSL\\include" "-Ld:\\a\\YUViewQt\\YUViewQt\\openSSL" -nomake examples -nomake tests -no-feature-sql -no-direct2d
         jom
         jom install
+        cd ..
         7z a -r ../${{matrix.ARTIFACT_NAME}}.zip Qt
         dir
       shell: cmd
