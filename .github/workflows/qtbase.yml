@@ -17,23 +17,19 @@ jobs:
           # - os: ubuntu-16.04
           #   OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_xenial.zip
           #   UNZIP_COMMAND: unzip -qa
-          #   ZIP_COMMAND: zip -r
           #   ARTIFACT_NAME: qtBase_5.14.2_xenial
           #   CONFIGURE_EXTRA: -qt-xcb
           # - os: ubuntu-18.04
           #   OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_bionic.zip
           #   UNZIP_COMMAND: unzip -qa
-          #   ZIP_COMMAND: zip -r
           #   ARTIFACT_NAME: qtBase_5.14.2_bionic
           #   CONFIGURE_EXTRA: -qt-xcb
           - os: windows-2019
             UNZIP_COMMAND: 7z x
-            ZIP_COMMAND: 7z a -r
             ARTIFACT_NAME: qtBase_5.14.2_win
           # - os: macos-10.15
           #   OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
           #   UNZIP_COMMAND: unzip -qa
-          #   ZIP_COMMAND: zip -r
           #   ARTIFACT_NAME: qtBase_5.14.2_mac
           #   CONFIGURE_EXTRA: 
     steps:
@@ -73,7 +69,9 @@ jobs:
         call .\configure.bat -release -opensource -confirm-license -prefix "d:\\a\YUViewQt\\YUViewQt\\build\\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-Id:\\a\\YUViewQt\\YUViewQt\\openSSL\\include" "-Ld:\\a\\YUViewQt\\YUViewQt\\openSSL" -nomake examples -nomake tests -no-feature-sql -no-direct2d
         jom
         jom install
-        cd ..
+        cd ..\Qt\build\Qt
+        7z a -r ../../../${{matrix.ARTIFACT_NAME}}.zip *
+        cd ..\..\..
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Build Mac/Linux
@@ -83,11 +81,10 @@ jobs:
         ./configure -release -opensource -confirm-license -prefix ${GITHUB_WORKSPACE}/Qt -openssl -I ${GITHUB_WORKSPACE}/openSSL/include/ -L ${GITHUB_WORKSPACE}/openSSL/ -nomake examples ${{matrix.CONFIGURE_EXTRA}}
         make -j 2
         make install
+        cd ../Qt
+        zip -r ../${{matrix.ARTIFACT_NAME}}.zip Q
         cd ..
       if: matrix.os != 'windows-2019'
-    - name: Zip files
-      run: |
-        ${{matrix.ZIP_COMMAND}} ${{matrix.ARTIFACT_NAME}}.zip Qt
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
