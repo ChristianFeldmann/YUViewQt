@@ -14,24 +14,24 @@ jobs:
     strategy:
       matrix:
         include: 
-          # - os: ubuntu-16.04
-          #   OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_xenial.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_5.14.2_xenial
-          #   CONFIGURE_EXTRA: -qt-xcb
-          # - os: ubuntu-18.04
-          #   OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_bionic.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_5.14.2_bionic
-          #   CONFIGURE_EXTRA: -qt-xcb
+          - os: ubuntu-16.04
+            OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_xenial.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_5.14.2_xenial
+            CONFIGURE_EXTRA: -qt-xcb
+          - os: ubuntu-18.04
+            OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_bionic.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_5.14.2_bionic
+            CONFIGURE_EXTRA: -qt-xcb
           - os: windows-2019
             UNZIP_COMMAND: 7z x
             ARTIFACT_NAME: qtBase_5.14.2_win
-          # - os: macos-10.15
-          #   OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_5.14.2_mac
-          #   CONFIGURE_EXTRA: 
+          - os: macos-10.15
+            OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_5.14.2_mac
+            CONFIGURE_EXTRA: 
     steps:
     - name: Download precompiled openSSL (windows)
       run: |
@@ -66,11 +66,10 @@ jobs:
         copy C:\ProgramData\chocolatey\bin\win_flex.exe C:\ProgramData\chocolatey\bin\flex.exe
         copy C:\ProgramData\chocolatey\bin\win_bison.exe C:\ProgramData\chocolatey\bin\bison.exe
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        call .\configure.bat -release -opensource -confirm-license -prefix "d:\\a\YUViewQt\\YUViewQt\\build\\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-Id:\\a\\YUViewQt\\YUViewQt\\openSSL\\include" "-Ld:\\a\\YUViewQt\\YUViewQt\\openSSL" -nomake examples -nomake tests -no-feature-sql -no-direct2d
+        call .\configure.bat -release -opensource -confirm-license -prefix "d:\\a\YUViewQt\\YUViewQt\\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-Id:\\a\\YUViewQt\\YUViewQt\\openSSL\\include" "-Ld:\\a\\YUViewQt\\YUViewQt\\openSSL" -nomake examples -nomake tests -no-feature-sql -no-direct2d
         jom
         jom install
-        cd ..
-        7z a -r ${{matrix.ARTIFACT_NAME}}.zip Qt
+        7z a -r ../${{matrix.ARTIFACT_NAME}}.zip Qt
         dir
       shell: cmd
       if: matrix.os == 'windows-2019'
@@ -83,23 +82,23 @@ jobs:
         make install
         cd ..
         zip -r ${{matrix.ARTIFACT_NAME}}.zip Qt
+        ls
       if: matrix.os != 'windows-2019'
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{matrix.ARTIFACT_NAME}}
-        path: ${{matrix.ARTIFACT_NAME}}.zip
-    
-    # - name: Upload
-    #   uses: actions/upload-release-asset@v1.0.1
-    #   env:
-    #     GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    # - name: Upload Artifact
+    #   uses: actions/upload-artifact@v2
     #   with:
-    #     upload_url: ${{github.event.release.upload_url}}
-    #     asset_path: ${{matrix.ARTIFACT_NAME}}.zip
-    #     asset_name: ${{matrix.ARTIFACT_NAME}}.zip
-    #     asset_content_type: application/zip
-    #   if: github.event_name == 'release'
+    #     name: ${{matrix.ARTIFACT_NAME}}
+    #     path: ${{matrix.ARTIFACT_NAME}}.zip
+    - name: Upload
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        upload_url: ${{github.event.release.upload_url}}
+        asset_path: ${{matrix.ARTIFACT_NAME}}.zip
+        asset_name: ${{matrix.ARTIFACT_NAME}}.zip
+        asset_content_type: application/zip
+      if: github.event_name == 'release'
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
