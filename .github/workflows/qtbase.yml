@@ -73,7 +73,7 @@ jobs:
         call .\configure.bat -release -opensource -confirm-license -prefix "d:\\a\YUViewQt\\YUViewQt\\build\\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-Id:\\a\\YUViewQt\\YUViewQt\\openSSL\\include" "-Ld:\\a\\YUViewQt\\YUViewQt\\openSSL" -nomake examples -nomake tests -no-feature-sql -no-direct2d
         jom
         jom install
-        mkdir Qt
+        cd ..
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Build Mac/Linux
