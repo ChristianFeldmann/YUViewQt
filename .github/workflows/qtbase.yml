@@ -70,7 +70,7 @@ jobs:
         jom
         jom install
         cd ..
-        7z a -r ../${{matrix.ARTIFACT_NAME}}.zip Qt
+        7z a -r ${{matrix.ARTIFACT_NAME}}.zip Qt
         dir
       shell: cmd
       if: matrix.os == 'windows-2019'
