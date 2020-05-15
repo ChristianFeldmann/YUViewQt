@@ -1,0 +1,82 @@
+name: C/C++ CI
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
+  push:
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include: 
+          - os: windows-2019
+            UNZIP_COMMAND: 7z x
+            ARTIFACT_NAME: qtTools_5.14.2_win
+          - os: macos-10.15
+            OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtTools_5.14.2_mac
+    steps:
+    - name: Download precompiled QtBase (Windows)
+      run: |
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.14.2/qtBase_5.14.2_win.zip -o Qt.zip
+        7z x Qt.zip
+      shell: cmd
+      if: matrix.os == 'windows-2019'
+    - name: Download precompiled Qtbase (Mac)
+      run: |
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.14.2/qtBase_5.14.2_mac.zip -o Qt.zip
+        unzip -qa Qt.zip
+      if: matrix.os == 'macos-10.15'
+    - name: Download QtTools Sources
+      run: |
+        curl -L https://github.com/qt/qttools/archive/v5.14.2.zip -o QtTools.zip
+        ${{matrix.UNZIP_COMMAND}} QtTools.zip
+        mv qttools-5.14.2 Qttools
+    - name: Build Windows
+      run: |
+        dir
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        cd Qttools/src/windeployqt
+        d:\a\YUViewQt\YUViewQt\Qt\bin\qmake
+        nmake
+        cd ..\..\..\
+        7z a -r ${{matrix.ARTIFACT_NAME}}.zip Qttools/bin/windeployqt.exe
+        dir
+      shell: cmd
+      if: matrix.os == 'windows-2019'
+    - name: Build Mac
+      run: |
+        cd Qttools/src/macdeployqt
+        pwd
+        ls
+        ../../../Qt/bin/qmake
+        make -j 2
+        cd ../../../
+        zip -r ${{matrix.ARTIFACT_NAME}}.zip Qttools/bin/macdeployqt
+      if: matrix.os == 'macos-10.15'
+    # - name: Upload Artifact
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: ${{matrix.ARTIFACT_NAME}}
+    #     path: ${{matrix.ARTIFACT_NAME}}.zip
+    - name: Upload
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        upload_url: ${{github.event.release.upload_url}}
+        asset_path: ${{matrix.ARTIFACT_NAME}}.zip
+        asset_name: ${{matrix.ARTIFACT_NAME}}.zip
+        asset_content_type: application/zip
+      if: github.event_name == 'release'
+
+  # How to upload files to the release:
+  # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
+  # This is something but is looks ugly
+  # https://github.com/actions/upload-release-asset/issues/17
