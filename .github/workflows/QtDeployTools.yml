@@ -41,7 +41,7 @@ jobs:
     - name: Build Windows
       run: |
         dir
-        setx path "%path%;d:\\a\YUViewQt\\YUViewQt\\Qt\\bin"
+        set PATH="%path%;d:\a\YUViewQt\YUViewQt\Qt\bin"
         echo %path%
         cd Qttools/src/windeployqt
         qmake
