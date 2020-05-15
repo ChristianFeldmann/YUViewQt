@@ -44,7 +44,7 @@ jobs:
         set PATH="%path%;d:\a\YUViewQt\YUViewQt\Qt\bin\"
         echo %path%
         cd Qttools/src/windeployqt
-        qmake
+        d:\a\YUViewQt\YUViewQt\Qt\bin\qmake
         nmake
         cd ..\..\..\
         7z a -r ${{matrix.ARTIFACT_NAME}}.zip Qttools/bin/windeployqt.exe
