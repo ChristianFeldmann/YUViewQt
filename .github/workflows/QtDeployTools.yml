@@ -41,11 +41,11 @@ jobs:
     - name: Build Windows
       run: |
         dir
-        set PATH="%path%;d:\a\YUViewQt\YUViewQt\Qt\bin\"
+        set PATH="%path%;d:\\a\\YUViewQt\\YUViewQt\\Qt\\bin\\"
         echo %path%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         cd Qttools/src/windeployqt
-        d:\a\YUViewQt\YUViewQt\Qt\bin\qmake
+        qmake
         nmake
         cd ..\..\..\
         7z a -r ${{matrix.ARTIFACT_NAME}}.zip Qttools/bin/windeployqt.exe
