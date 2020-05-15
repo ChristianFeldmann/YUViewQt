@@ -60,11 +60,11 @@ jobs:
         cd ../../../
         zip -r ${{matrix.ARTIFACT_NAME}}.zip Qttools/bin/macdeployqt
       if: matrix.os == 'macos-10.15'
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{matrix.ARTIFACT_NAME}}
-        path: ${{matrix.ARTIFACT_NAME}}.zip
+    # - name: Upload Artifact
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: ${{matrix.ARTIFACT_NAME}}
+    #     path: ${{matrix.ARTIFACT_NAME}}.zip
     - name: Upload
       uses: actions/upload-release-asset@v1.0.1
       env:
