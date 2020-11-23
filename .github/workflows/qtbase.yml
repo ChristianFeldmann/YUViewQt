@@ -18,12 +18,12 @@ jobs:
             OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_xenial.zip
             UNZIP_COMMAND: unzip -qa
             ARTIFACT_NAME: qtBase_5.15.1_xenial
-            CONFIGURE_EXTRA: -qt-xcb
+            CONFIGURE_EXTRA: -bundled-xcb-xinput
           - os: ubuntu-18.04
             OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_bionic.zip
             UNZIP_COMMAND: unzip -qa
             ARTIFACT_NAME: qtBase_5.15.1_bionic
-            CONFIGURE_EXTRA: -qt-xcb
+            CONFIGURE_EXTRA: -bundled-xcb-xinput
           - os: windows-2019
             UNZIP_COMMAND: 7z x
             ARTIFACT_NAME: qtBase_5.15.1_win
