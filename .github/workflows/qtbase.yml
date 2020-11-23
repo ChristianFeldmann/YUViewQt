@@ -17,20 +17,20 @@ jobs:
           - os: ubuntu-16.04
             OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_xenial.zip
             UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_5.14.2_xenial
+            ARTIFACT_NAME: qtBase_5.15.1_xenial
             CONFIGURE_EXTRA: -qt-xcb
           - os: ubuntu-18.04
             OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_bionic.zip
             UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_5.14.2_bionic
+            ARTIFACT_NAME: qtBase_5.15.1_bionic
             CONFIGURE_EXTRA: -qt-xcb
           - os: windows-2019
             UNZIP_COMMAND: 7z x
-            ARTIFACT_NAME: qtBase_5.14.2_win
+            ARTIFACT_NAME: qtBase_5.15.1_win
           - os: macos-10.15
             OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
             UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_5.14.2_mac
+            ARTIFACT_NAME: qtBase_5.15.1_mac
             CONFIGURE_EXTRA: 
     steps:
     - name: Download precompiled openSSL (windows)
@@ -46,9 +46,9 @@ jobs:
       if: matrix.os != 'windows-2019'
     - name: Download QtBase Sources
       run: |
-        curl -L https://github.com/qt/qtbase/archive/v5.14.2.zip -o QtBase.zip
+        curl -L https://github.com/qt/qtbase/archive/v5.15.1.zip -o QtBase.zip
         ${{matrix.UNZIP_COMMAND}} QtBase.zip
-        mv qtbase-5.14.2 Qt_build
+        mv qtbase-5.15.1 Qt_build
     - name: Install windows dependencies
       run: |
         choco install winflexbison3
