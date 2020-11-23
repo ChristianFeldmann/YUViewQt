@@ -56,7 +56,7 @@ jobs:
     - name: Build Mac
       run: |
         cd Qttools
-        ../../../Qt/bin/qmake
+        ../Qt/bin/qmake
         cd src/macdeployqt
         pwd
         ls
