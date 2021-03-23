@@ -79,8 +79,8 @@ jobs:
         cd Qt_build
         mkdir .git
         ./configure -release -opensource -confirm-license -prefix ${GITHUB_WORKSPACE}/Qt -openssl -I ${GITHUB_WORKSPACE}/openSSL/include/ -L ${GITHUB_WORKSPACE}/openSSL/ -nomake examples ${{matrix.CONFIGURE_EXTRA}}
-        make -j 2
-        make install
+        cmake --build . --parallel
+        cmake --install .
         cd ..
         zip -r ${{matrix.ARTIFACT_NAME}}.zip Qt
         ls
