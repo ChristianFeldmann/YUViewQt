@@ -14,11 +14,11 @@ jobs:
     strategy:
       matrix:
         include: 
-          - os: ubuntu-16.04
-            OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_xenial.zip
-            UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.0.2_xenial
-            CONFIGURE_EXTRA: -bundled-xcb-xinput
+          # - os: ubuntu-16.04
+          #   OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_xenial.zip
+          #   UNZIP_COMMAND: unzip -qa
+          #   ARTIFACT_NAME: qtBase_6.0.2_xenial
+          #   CONFIGURE_EXTRA: -bundled-xcb-xinput
           - os: ubuntu-18.04
             OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_bionic.zip
             UNZIP_COMMAND: unzip -qa
