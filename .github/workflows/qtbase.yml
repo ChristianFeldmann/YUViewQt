@@ -39,7 +39,7 @@ jobs:
         7z x openSSL.zip -oopenSSL
       shell: cmd
       if: matrix.os == 'windows-2019'
-    - name: Download precompiled openSSL (other)
+    - name: Download precompiled openSSL (mac/linux)
       run: |
         curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1g/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
         unzip -qa openSSL.zip -d openSSL
@@ -67,8 +67,8 @@ jobs:
         copy C:\ProgramData\chocolatey\bin\win_bison.exe C:\ProgramData\chocolatey\bin\bison.exe
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         call .\configure.bat -release -opensource -confirm-license -prefix "d:\\a\YUViewQt\\YUViewQt\\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-Id:\\a\\YUViewQt\\YUViewQt\\openSSL\\include" "-Ld:\\a\\YUViewQt\\YUViewQt\\openSSL" -nomake examples -nomake tests -no-feature-sql -no-direct2d
-        jom
-        jom install
+        cmake --build . --parallel
+        cmake --install .
         cd ..
         7z a -r ${{matrix.ARTIFACT_NAME}}.zip Qt
         dir
