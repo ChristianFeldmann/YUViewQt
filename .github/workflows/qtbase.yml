@@ -67,10 +67,8 @@ jobs:
         dir
         cd Qt_build
         mkdir .git
-        copy C:\ProgramData\chocolatey\bin\win_flex.exe C:\ProgramData\chocolatey\bin\flex.exe
-        copy C:\ProgramData\chocolatey\bin\win_bison.exe C:\ProgramData\chocolatey\bin\bison.exe
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="d:\\a\YUViewQt\\YUViewQt\\Qt" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR="d:\\a\\YUViewQt\\YUViewQt\\openSSL" -DFEATURE_sql=OFF -DFEATURE_direct2d=OFF
+        cmake -DCMAKE_BUILD_TYPE=Release -G ninja -DCMAKE_INSTALL_PREFIX="d:\\a\YUViewQt\\YUViewQt\\Qt" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR="d:\\a\\YUViewQt\\YUViewQt\\openSSL" -DFEATURE_sql=OFF -DFEATURE_direct2d=OFF
         cmake --build . --parallel 2
         cmake --install .
         cd ..
