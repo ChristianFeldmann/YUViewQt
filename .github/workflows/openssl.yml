@@ -16,27 +16,27 @@ jobs:
         os: ['ubuntu-16.04', 'ubuntu-18.04', 'windows-2019', 'macos-10.15']
         include: 
           - os: ubuntu-16.04
-            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_xenial
+            ARTIFACT_NAME: openSSL_1_1_1j_ubuntu_xenial
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
           - os: ubuntu-18.04
-            ARTIFACT_NAME: openSSL_1_1_1g_ubuntu_bionic
+            ARTIFACT_NAME: openSSL_1_1_1j_ubuntu_bionic
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
           - os: windows-2019
-            ARTIFACT_NAME: openSSL_1_1_1g_win
+            ARTIFACT_NAME: openSSL_1_1_1j_win
             UNZIP_COMMAND: 7z x
             ZIP_COMMAND: 7z a -r
           - os: macos-10.15
-            ARTIFACT_NAME: openSSL_1_1_1g_mac
+            ARTIFACT_NAME: openSSL_1_1_1j_mac
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
     steps:
     - name: Download sources
       run: |
-        curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1g.zip -o openSSL.zip
+        curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1j.zip -o openSSL.zip
         ${{matrix.UNZIP_COMMAND}} openSSL.zip
-        mv openssl-OpenSSL_1_1_1g openSSL
+        mv openssl-OpenSSL_1_1_1j openSSL
     - name: Install windows dependencies
       run: |
         choco install nasm
