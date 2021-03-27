@@ -19,11 +19,11 @@ jobs:
             UNZIP_COMMAND: unzip -qa
             ARTIFACT_NAME: qtBase_6.0.2_xenial
             CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
-          # - os: ubuntu-18.04
-          #   OPEN_SSL_FILE: openSSL_1_1_1j_ubuntu_bionic.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_6.0.2_bionic
-          #   CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
+          - os: ubuntu-18.04
+            OPEN_SSL_FILE: openSSL_1_1_1j_ubuntu_bionic.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_6.0.2_bionic
+            CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
           # - os: windows-2019
           #   UNZIP_COMMAND: 7z x
           #   ARTIFACT_NAME: qtBase_6.0.2_win
