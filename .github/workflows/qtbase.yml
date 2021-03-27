@@ -19,19 +19,25 @@ jobs:
           #   UNZIP_COMMAND: unzip -qa
           #   ARTIFACT_NAME: qtBase_6.0.2_xenial
           #   CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
+          #   PACKAGE_INSTALL_CALL: sudo apt install
+          #   PACKAGE_DEPENDENCIES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
           # - os: ubuntu-18.04
           #   OPEN_SSL_FILE: openSSL_1_1_1j_ubuntu_bionic.zip
           #   UNZIP_COMMAND: unzip -qa
           #   ARTIFACT_NAME: qtBase_6.0.2_bionic
           #   CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
-          - os: windows-2019
-            UNZIP_COMMAND: 7z x
-            ARTIFACT_NAME: qtBase_6.0.2_win
-          # - os: macos-10.15
-          #   OPEN_SSL_FILE: openSSL_1_1_1j_mac.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_6.0.2_mac
-          #   CONFIGURE_EXTRA: 
+          #   PACKAGE_INSTALL_CALL: sudo apt install
+          #   PACKAGE_DEPENDENCIES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
+          # - os: windows-2019
+          #   UNZIP_COMMAND: 7z x
+          #   ARTIFACT_NAME: qtBase_6.0.2_win
+          - os: macos-10.15
+            OPEN_SSL_FILE: openSSL_1_1_1j_mac.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_6.0.2_mac
+            CONFIGURE_EXTRA: 
+            PACKAGE_INSTALL_CALL: brew install
+            PACKAGE_DEPENDENCIES: ninja
     steps:
     - name: Download precompiled openSSL (windows)
       run: |
@@ -54,8 +60,8 @@ jobs:
         choco install ninja
       shell: cmd
       if: matrix.os == 'windows-2019'
-    - name: Install Linux Dependencies
-      run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
+    - name: Install Linux/Mac Dependencies
+      run: ${{matrix.PACKAGE_INSTALL_CALL}} ${{matrix.PACKAGE_DEPENDENCIES}}
       if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
     - name: Update Cmake and GCC (ubuntu 16)
       run: |
