@@ -14,34 +14,36 @@ jobs:
     strategy:
       matrix:
         include: 
-          # - os: ubuntu-16.04
-          #   OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_xenial.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_6.0.2_xenial
-          #   CONFIGURE_EXTRA: -bundled-xcb-xinput
+          - os: ubuntu-16.04
+            OPEN_SSL_FILE: openSSL_1_1_1j_ubuntu_xenial.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_6.0.2_xenial
+            CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
+            APT_PACKAGES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev apt-transport-https ca-certificates gnupg software-properties-common
           - os: ubuntu-18.04
-            OPEN_SSL_FILE: openSSL_1_1_1g_ubuntu_bionic.zip
+            OPEN_SSL_FILE: openSSL_1_1_1j_ubuntu_bionic.zip
             UNZIP_COMMAND: unzip -qa
             ARTIFACT_NAME: qtBase_6.0.2_bionic
-            CONFIGURE_EXTRA: -bundled-xcb-xinput
+            CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
+            APT_PACKAGES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev
           - os: windows-2019
             UNZIP_COMMAND: 7z x
             ARTIFACT_NAME: qtBase_6.0.2_win
           - os: macos-10.15
-            OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
+            OPEN_SSL_FILE: openSSL_1_1_1j_mac.zip
             UNZIP_COMMAND: unzip -qa
             ARTIFACT_NAME: qtBase_6.0.2_mac
             CONFIGURE_EXTRA: 
     steps:
     - name: Download precompiled openSSL (windows)
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1g/openSSL_1_1_1g_win.zip -o openSSL.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1j/openSSL_1_1_1j_win.zip -o openSSL.zip
         7z x openSSL.zip -oopenSSL
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Download precompiled openSSL (mac/linux)
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1g/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1j/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
         unzip -qa openSSL.zip -d openSSL
       if: matrix.os != 'windows-2019'
     - name: Download QtBase Sources
@@ -56,8 +58,17 @@ jobs:
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Install Linux Dependencies
-      run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev
+      run: sudo apt install ${{APT_PACKAGES}}
       if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
+    - name: Update Cmake and GCC (ubuntu 16)
+      run: |
+        add-apt-repository -y ppa:jonathonf/gcc
+        apt install gcc-8
+        update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 60 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-8 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-8 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-8
+        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+        apt-add-repository 'deb https://apt.kitware.com/ubuntu/ xenial main'
+        apt install cmake
+      if: matrix.os == 'ubuntu-16.04'
     - name: Build Windows
       run: |
         dir
@@ -66,7 +77,7 @@ jobs:
         copy C:\ProgramData\chocolatey\bin\win_flex.exe C:\ProgramData\chocolatey\bin\flex.exe
         copy C:\ProgramData\chocolatey\bin\win_bison.exe C:\ProgramData\chocolatey\bin\bison.exe
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        call .\configure.bat -release -opensource -confirm-license -prefix "d:\\a\YUViewQt\\YUViewQt\\Qt" -opengl dynamic -platform win32-msvc2015 -openssl "-Id:\\a\\YUViewQt\\YUViewQt\\openSSL\\include" "-Ld:\\a\\YUViewQt\\YUViewQt\\openSSL" -nomake examples -nomake tests -no-feature-sql -no-direct2d
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="d:\\a\YUViewQt\\YUViewQt\\Qt" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DQT_QMAKE_TARGET_MKSPEC=win32-msvc2015 -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR="d:\\a\\YUViewQt\\YUViewQt\\openSSL" -DFEATURE_sql=OFF -DFEATURE_direct2d=OFF
         cmake --build . --parallel
         cmake --install .
         cd ..
@@ -78,7 +89,7 @@ jobs:
       run: |
         cd Qt_build
         mkdir .git
-        ./configure -release -opensource -confirm-license -prefix ${GITHUB_WORKSPACE}/Qt -openssl -I ${GITHUB_WORKSPACE}/openSSL/include/ -L ${GITHUB_WORKSPACE}/openSSL/ -nomake examples ${{matrix.CONFIGURE_EXTRA}}
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}/openSSL/ ${{matrix.CONFIGURE_EXTRA}}
         cmake --build . --parallel
         cmake --install .
         cd ..
