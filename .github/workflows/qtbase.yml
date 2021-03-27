@@ -58,7 +58,7 @@ jobs:
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Install Linux Dependencies
-      run: sudo apt install ${{APT_PACKAGES}}
+      run: sudo apt install ${{matrix.APT_PACKAGES}}
       if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
     - name: Update Cmake and GCC (ubuntu 16)
       run: |
