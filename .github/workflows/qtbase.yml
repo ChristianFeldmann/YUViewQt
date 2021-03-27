@@ -56,7 +56,7 @@ jobs:
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Install Linux Dependencies
-      run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja
+      run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
       if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
     - name: Update Cmake and GCC (ubuntu 16)
       run: |
