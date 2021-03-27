@@ -27,11 +27,11 @@ jobs:
           - os: windows-2019
             UNZIP_COMMAND: 7z x
             ARTIFACT_NAME: qtBase_6.0.2_win
-          - os: macos-10.15
-            OPEN_SSL_FILE: openSSL_1_1_1j_mac.zip
-            UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.0.2_mac
-            CONFIGURE_EXTRA: 
+          # - os: macos-10.15
+          #   OPEN_SSL_FILE: openSSL_1_1_1j_mac.zip
+          #   UNZIP_COMMAND: unzip -qa
+          #   ARTIFACT_NAME: qtBase_6.0.2_mac
+          #   CONFIGURE_EXTRA: 
     steps:
     - name: Download precompiled openSSL (windows)
       run: |
@@ -51,8 +51,7 @@ jobs:
         mv qtbase-6.0.2 Qt_build
     - name: Install windows dependencies
       run: |
-        choco install winflexbison3
-        choco install jom
+        choco install ninja
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Install Linux Dependencies
@@ -71,7 +70,7 @@ jobs:
         copy C:\ProgramData\chocolatey\bin\win_flex.exe C:\ProgramData\chocolatey\bin\flex.exe
         copy C:\ProgramData\chocolatey\bin\win_bison.exe C:\ProgramData\chocolatey\bin\bison.exe
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="d:\\a\YUViewQt\\YUViewQt\\Qt" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DQT_QMAKE_TARGET_MKSPEC=win32-msvc2015 -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR="d:\\a\\YUViewQt\\YUViewQt\\openSSL" -DFEATURE_sql=OFF -DFEATURE_direct2d=OFF
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="d:\\a\YUViewQt\\YUViewQt\\Qt" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR="d:\\a\\YUViewQt\\YUViewQt\\openSSL" -DFEATURE_sql=OFF -DFEATURE_direct2d=OFF
         cmake --build . --parallel 2
         cmake --install .
         cd ..
