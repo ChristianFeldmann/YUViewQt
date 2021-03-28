@@ -62,7 +62,7 @@ jobs:
       if: matrix.os == 'windows-2019'
     - name: Install Linux/Mac Dependencies
       run: ${{matrix.PACKAGE_INSTALL_CALL}} ${{matrix.PACKAGE_DEPENDENCIES}}
-      if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
+      if: matrix.os != 'windows-2019'
     - name: Update Cmake and GCC (ubuntu 16)
       run: |
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9
