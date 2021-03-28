@@ -86,7 +86,7 @@ jobs:
       run: |
         cd Qt_build
         mkdir .git
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}/openSSL/ ${{matrix.CONFIGURE_EXTRA}}
+        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}/openSSL/ ${{matrix.CONFIGURE_EXTRA}}
         cmake --build . --parallel 2
         cmake --install .
         cd ..
