@@ -16,28 +16,28 @@ jobs:
         include: 
           - os: windows-2019
             UNZIP_COMMAND: 7z x
-            ARTIFACT_NAME: qtTools_5.15.1_win
+            ARTIFACT_NAME: qtTools_6.0.2_win
           - os: macos-10.15
             OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
             UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtTools_5.15.1_mac
+            ARTIFACT_NAME: qtTools_6.0.2_mac
     steps:
     - name: Download precompiled QtBase (Windows)
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.15.1/qtBase_5.15.1_win.zip -o Qt.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-6.0.2/qtBase_6.0.2_win.zip -o Qt.zip
         7z x Qt.zip
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Download precompiled Qtbase (Mac)
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-5.15.1/qtBase_5.15.1_mac.zip -o Qt.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-6.0.2/qtBase_6.0.2_mac.zip -o Qt.zip
         unzip -qa Qt.zip
       if: matrix.os == 'macos-10.15'
     - name: Download QtTools Sources
       run: |
-        curl -L https://github.com/qt/qttools/archive/v5.15.1.zip -o QtTools.zip
+        curl -L https://github.com/qt/qttools/archive/v6.0.2.zip -o QtTools.zip
         ${{matrix.UNZIP_COMMAND}} QtTools.zip
-        mv qttools-5.15.1 Qttools
+        mv qttools-6.0.2 Qttools
     - name: Build Windows
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
