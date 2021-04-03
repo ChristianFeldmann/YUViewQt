@@ -41,26 +41,22 @@ jobs:
     - name: Build Windows
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        cd Qttools
-        d:\a\YUViewQt\YUViewQt\Qt\bin\qmake
-        cd src/windeployqt
-        d:\a\YUViewQt\YUViewQt\Qt\bin\qmake
-        nmake
-        cd ..\..\..\
-        7z a -r ${{matrix.ARTIFACT_NAME}}.zip Qttools/bin/windeployqt.exe
+        mkdir build
+        cd build
+        cmake ../src/windeployqt
+        cmake --build . --parallel 2
+        cd ..
+        7z a -r ${{matrix.ARTIFACT_NAME}}.zip build/windeployqt.exe
         dir
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Build Mac
       run: |
-        cd Qttools
-        ../Qt/bin/qmake
-        cd src/macdeployqt
-        pwd
-        ../../../Qt/bin/qmake
-        make -j 2
-        cd ../../../
-        zip -r ${{matrix.ARTIFACT_NAME}}.zip Qttools/bin/macdeployqt
+        mkdir build
+        cd build
+        cmake ../src/windeployqt
+        cmake --build . --parallel 2
+        zip -r ${{matrix.ARTIFACT_NAME}}.zip build/macdeployqt
       if: matrix.os == 'macos-10.15'
     # - name: Upload Artifact
     #   uses: actions/upload-artifact@v2
