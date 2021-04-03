@@ -50,6 +50,8 @@ jobs:
         dir
       shell: cmd
       if: matrix.os == 'windows-2019'
+      env:
+        Qt6_DIR: $GITHUB_WORKSPACE/Qt
     - name: Build Mac
       run: |
         mkdir build
@@ -58,6 +60,8 @@ jobs:
         cmake --build . --parallel 2
         zip -r ${{matrix.ARTIFACT_NAME}}.zip build/macdeployqt
       if: matrix.os == 'macos-10.15'
+      env:
+        Qt6_DIR: $GITHUB_WORKSPACE/Qt
     # - name: Upload Artifact
     #   uses: actions/upload-artifact@v2
     #   with:
