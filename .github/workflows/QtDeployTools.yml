@@ -40,6 +40,7 @@ jobs:
         mv qttools-6.0.2 Qttools
     - name: Build Windows
       run: |
+        echo %Qt6_DIR%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         mkdir build
         cd build
@@ -54,6 +55,7 @@ jobs:
         Qt6_DIR: $GITHUB_WORKSPACE/Qt
     - name: Build Mac
       run: |
+        echo $Qt6_DIR
         mkdir build
         cd build
         cmake ../Qttools/
