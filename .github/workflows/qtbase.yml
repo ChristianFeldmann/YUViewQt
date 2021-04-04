@@ -14,30 +14,30 @@ jobs:
     strategy:
       matrix:
         include: 
-          # - os: ubuntu-16.04
-          #   OPEN_SSL_FILE: openSSL_1_1_1j_ubuntu_xenial.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_6.0.2_xenial
-          #   CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
-          #   PACKAGE_INSTALL_CALL: sudo apt install
-          #   PACKAGE_DEPENDENCIES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
-          # - os: ubuntu-18.04
-          #   OPEN_SSL_FILE: openSSL_1_1_1j_ubuntu_bionic.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_6.0.2_bionic
-          #   CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
-          #   PACKAGE_INSTALL_CALL: sudo apt install
-          #   PACKAGE_DEPENDENCIES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
+          - os: ubuntu-16.04
+            OPEN_SSL_FILE: openSSL_1_1_1j_ubuntu_xenial.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_6.0.2_xenial
+            CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
+            PACKAGE_INSTALL_CALL: sudo apt install
+            PACKAGE_DEPENDENCIES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
+          - os: ubuntu-18.04
+            OPEN_SSL_FILE: openSSL_1_1_1j_ubuntu_bionic.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_6.0.2_bionic
+            CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
+            PACKAGE_INSTALL_CALL: sudo apt install
+            PACKAGE_DEPENDENCIES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
           - os: windows-2019
             UNZIP_COMMAND: 7z x
             ARTIFACT_NAME: qtBase_6.0.2_win
-          # - os: macos-10.15
-          #   OPEN_SSL_FILE: openSSL_1_1_1j_mac.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_6.0.2_mac
-          #   CONFIGURE_EXTRA: 
-          #   PACKAGE_INSTALL_CALL: brew install
-          #   PACKAGE_DEPENDENCIES: ninja
+          - os: macos-10.15
+            OPEN_SSL_FILE: openSSL_1_1_1j_mac.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_6.0.2_mac
+            CONFIGURE_EXTRA: 
+            PACKAGE_INSTALL_CALL: brew install
+            PACKAGE_DEPENDENCIES: ninja
     steps:
     - name: Download precompiled openSSL (windows)
       run: |
@@ -70,7 +70,6 @@ jobs:
       if: matrix.os == 'ubuntu-16.04'
     - name: Build Windows
       run: |
-        dir
         cd Qt_build
         mkdir .git
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
