@@ -66,6 +66,7 @@ jobs:
       env:
         Qt6_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6
         Qt6CoreTools_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6CoreTools
+        Qt6WidgetsTools_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6WidgetsTools
     # - name: Upload Artifact
     #   uses: actions/upload-artifact@v2
     #   with:
