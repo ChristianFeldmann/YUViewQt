@@ -56,6 +56,7 @@ jobs:
     - name: Build Mac
       run: |
         echo $Qt6_DIR
+        ls $Qt6_DIR
         mkdir build
         cd build
         cmake ../Qttools/
