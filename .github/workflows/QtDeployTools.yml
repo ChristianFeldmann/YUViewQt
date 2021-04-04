@@ -54,6 +54,7 @@ jobs:
       env:
         Qt6_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6
         Qt6CoreTools_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6CoreTools
+        Qt6WidgetsTools_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6WidgetsTools
     - name: Build Mac
       run: |
         mkdir build
@@ -61,7 +62,7 @@ jobs:
         cmake -DFEATURE_assistant=OFF -DFEATURE_designer=OFF -DFEATURE_distancefieldgenerator=OFF -DFEATURE_kmap2qmap=OFF -DFEATURE_linguist=OFF -DFEATURE_pixeltool=OFF -DFEATURE_qdbus=OFF -DFEATURE_qev=OFF -DFEATURE_qtattributionsscanner=OFF -DFEATURE_qtdiag=OFF -DFEATURE_qtplugininfo=OFF ../Qttools/
         cmake --build . --parallel 2
         cd ..
-        zip -r ${{matrix.ARTIFACT_NAME}}.zip build/
+        zip -r ${{matrix.ARTIFACT_NAME}}.zip build/bin/macdeployqt
       if: matrix.os == 'macos-10.15'
       env:
         Qt6_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6
