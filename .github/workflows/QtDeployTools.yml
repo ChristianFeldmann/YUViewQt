@@ -38,13 +38,21 @@ jobs:
         curl -L https://github.com/qt/qttools/archive/v6.0.2.zip -o QtTools.zip
         ${{matrix.UNZIP_COMMAND}} QtTools.zip
         mv qttools-6.0.2 Qttools
+    - name: Install windows dependencies
+      run: |
+        choco install ninja
+      shell: cmd
+      if: matrix.os == 'windows-2019'
+    - name: Install Mac Dependencies
+      run: brew install ninja
+      if: matrix.os == 'macos-10.15'
     - name: Build Windows
       run: |
         echo %Qt6_DIR%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         mkdir build
         cd build
-        cmake -DFEATURE_assistant=OFF -DFEATURE_designer=OFF -DFEATURE_distancefieldgenerator=OFF -DFEATURE_kmap2qmap=OFF -DFEATURE_linguist=OFF -DFEATURE_pixeltool=OFF -DFEATURE_qdbus=OFF -DFEATURE_qev=OFF -DFEATURE_qtattributionsscanner=OFF -DFEATURE_qtdiag=OFF -DFEATURE_qtplugininfo=OFF -DCMAKE_BUILD_TYPE=Release ../Qttools/
+        cmake -G Ninja -DFEATURE_assistant=OFF -DFEATURE_designer=OFF -DFEATURE_distancefieldgenerator=OFF -DFEATURE_kmap2qmap=OFF -DFEATURE_linguist=OFF -DFEATURE_pixeltool=OFF -DFEATURE_qdbus=OFF -DFEATURE_qev=OFF -DFEATURE_qtattributionsscanner=OFF -DFEATURE_qtdiag=OFF -DFEATURE_qtplugininfo=OFF -DCMAKE_BUILD_TYPE=Release ../Qttools/
         cmake --build . --parallel 2
         cd ..
         7z a -r ${{matrix.ARTIFACT_NAME}}.zip build
@@ -59,7 +67,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -DFEATURE_assistant=OFF -DFEATURE_designer=OFF -DFEATURE_distancefieldgenerator=OFF -DFEATURE_kmap2qmap=OFF -DFEATURE_linguist=OFF -DFEATURE_pixeltool=OFF -DFEATURE_qdbus=OFF -DFEATURE_qev=OFF -DFEATURE_qtattributionsscanner=OFF -DFEATURE_qtdiag=OFF -DFEATURE_qtplugininfo=OFF -DCMAKE_BUILD_TYPE=Release ../Qttools/
+        cmake -G Ninja -DFEATURE_assistant=OFF -DFEATURE_designer=OFF -DFEATURE_distancefieldgenerator=OFF -DFEATURE_kmap2qmap=OFF -DFEATURE_linguist=OFF -DFEATURE_pixeltool=OFF -DFEATURE_qdbus=OFF -DFEATURE_qev=OFF -DFEATURE_qtattributionsscanner=OFF -DFEATURE_qtdiag=OFF -DFEATURE_qtplugininfo=OFF -DCMAKE_BUILD_TYPE=Release ../Qttools/
         cmake --build . --parallel 2
         cd ..
         zip -r ${{matrix.ARTIFACT_NAME}}.zip build/bin/macdeployqt
