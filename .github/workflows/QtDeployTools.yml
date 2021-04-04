@@ -53,6 +53,7 @@ jobs:
       if: matrix.os == 'windows-2019'
       env:
         Qt6_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6
+        Qt6CoreTools_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6CoreTools
     - name: Build Mac
       run: |
         mkdir build
