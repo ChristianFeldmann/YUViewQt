@@ -67,11 +67,11 @@ jobs:
         Qt6_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6
         Qt6CoreTools_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6CoreTools
         Qt6WidgetsTools_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6WidgetsTools
-    # - name: Upload Artifact
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: ${{matrix.ARTIFACT_NAME}}
-    #     path: ${{matrix.ARTIFACT_NAME}}.zip
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{matrix.ARTIFACT_NAME}}
+        path: ${{matrix.ARTIFACT_NAME}}.zip
     - name: Upload
       uses: actions/upload-release-asset@v1.0.1
       env:
