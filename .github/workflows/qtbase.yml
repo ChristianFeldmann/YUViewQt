@@ -70,11 +70,10 @@ jobs:
       if: matrix.os == 'ubuntu-16.04'
     - name: Build Windows
       run: |
-        dir
         cd Qt_build
         mkdir .git
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX="d:\\a\YUViewQt\\YUViewQt\\Qt" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR="d:\\a\\YUViewQt\\YUViewQt\\openSSL" -DFEATURE_sql=OFF -DFEATURE_direct2d=OFF
+        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX="d:\\a\YUViewQt\\YUViewQt\\Qt" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR="d:\\a\\YUViewQt\\YUViewQt\\openSSL" -DFEATURE_sql=OFF
         cmake --build . --parallel 2
         cmake --install .
         cd ..
