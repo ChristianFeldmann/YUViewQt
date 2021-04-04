@@ -21,7 +21,7 @@ jobs:
             OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
             UNZIP_COMMAND: unzip -qa
             ARTIFACT_NAME: qtTools_6.0.2_mac
-    steps:
+    steps: 
     - name: Download precompiled QtBase (Windows)
       run: |
         curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-6.0.2/qtBase_6.0.2_win.zip -o Qt.zip
