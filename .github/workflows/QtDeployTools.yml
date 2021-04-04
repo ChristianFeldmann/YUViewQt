@@ -55,7 +55,7 @@ jobs:
         cmake -G Ninja -DFEATURE_assistant=OFF -DFEATURE_designer=OFF -DFEATURE_distancefieldgenerator=OFF -DFEATURE_kmap2qmap=OFF -DFEATURE_linguist=OFF -DFEATURE_pixeltool=OFF -DFEATURE_qdbus=OFF -DFEATURE_qev=OFF -DFEATURE_qtattributionsscanner=OFF -DFEATURE_qtdiag=OFF -DFEATURE_qtplugininfo=OFF -DCMAKE_BUILD_TYPE=Release ../Qttools/
         cmake --build . --parallel 2
         cd ..
-        7z a -r ${{matrix.ARTIFACT_NAME}}.zip build/bin/windwployqt.exe
+        7z a -r ${{matrix.ARTIFACT_NAME}}.zip build/bin/windeployqt.exe
         dir
       shell: cmd
       if: matrix.os == 'windows-2019'
