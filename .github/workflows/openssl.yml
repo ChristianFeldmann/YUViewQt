@@ -13,30 +13,38 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ['ubuntu-16.04', 'ubuntu-18.04', 'windows-2019', 'macos-10.15']
+        os: ['ubuntu-20.04', 'ubuntu-22.04', 'windows-2019', 'windows-2022', 'macos-11', 'macos-12']
         include: 
-          - os: ubuntu-16.04
-            ARTIFACT_NAME: openSSL_1_1_1j_ubuntu_xenial
+          - os: ubuntu-20.04
+            ARTIFACT_NAME: openSSL_1_1_1u_ubuntu20
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
-          - os: ubuntu-18.04
-            ARTIFACT_NAME: openSSL_1_1_1j_ubuntu_bionic
+          - os: ubuntu-22.04
+            ARTIFACT_NAME: openSSL_1_1_1u_ubuntu22
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
           - os: windows-2019
-            ARTIFACT_NAME: openSSL_1_1_1j_win
+            ARTIFACT_NAME: openSSL_1_1_1u_win2019
             UNZIP_COMMAND: 7z x
             ZIP_COMMAND: 7z a -r
-          - os: macos-10.15
-            ARTIFACT_NAME: openSSL_1_1_1j_mac
+          - os: windows-2022
+            ARTIFACT_NAME: openSSL_1_1_1u_win2022
+            UNZIP_COMMAND: 7z x
+            ZIP_COMMAND: 7z a -r
+          - os: macos-11
+            ARTIFACT_NAME: openSSL_1_1_1u_mac11
+            UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
+          - os: macos-12
+            ARTIFACT_NAME: openSSL_1_1_1u_mac12
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
     steps:
     - name: Download sources
       run: |
-        curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1j.zip -o openSSL.zip
+        curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1u.zip -o openSSL.zip
         ${{matrix.UNZIP_COMMAND}} openSSL.zip
-        mv openssl-OpenSSL_1_1_1j openSSL
+        mv openssl-OpenSSL_1_1_1u openSSL
     - name: Install windows dependencies
       run: |
         choco install nasm
@@ -49,7 +57,7 @@ jobs:
         set CXX=
         set CXX_FOR_BUILD=
       shell: cmd
-      if: matrix.os == 'windows-2019'
+      if: matrix.os == 'windows-2019' || matrix.os == 'windows-2022'
     - name: Build Windows
       run: |
         cd openSSL
@@ -65,7 +73,7 @@ jobs:
         copy openSSL\libssl-1_1-x64.dll artifact
         copy openSSL\libssl.lib artifact
       shell: cmd
-      if: matrix.os == 'windows-2019'
+      if: matrix.os == 'windows-2019' || matrix.os == 'windows-2022'
     - name: Build Mac
       run: |
         mkdir dist
@@ -79,7 +87,7 @@ jobs:
         mkdir artifact
         cp -R openSSL/include artifact
         cp openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
-      if: matrix.os == 'macos-10.15'
+      if: matrix.os == 'macos-11' || matrix.os == 'macos-12'
     - name: Build Linux
       run: |
         mkdir dist
@@ -95,7 +103,7 @@ jobs:
         mkdir artifact
         cp -R openSSL/include artifact
         cp openSSL/libcrypto.* openSSL/libssl.* artifact
-      if: matrix.os == 'ubuntu-16.04' || matrix.os == 'ubuntu-18.04'
+      if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
