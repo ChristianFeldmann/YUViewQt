@@ -39,12 +39,12 @@ jobs:
           - os: macos-11
             OPEN_SSL_FILE: openSSL_1_1_1u_mac11.zip
             UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.5.2_mac
+            ARTIFACT_NAME: qtBase_6.5.2_mac11
             CONFIGURE_EXTRA:
           - os: macos-12
             OPEN_SSL_FILE: openSSL_1_1_1u_mac12.zip
             UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.5.2_mac
+            ARTIFACT_NAME: qtBase_6.5.2_mac12
             CONFIGURE_EXTRA:
     steps:
     - uses: turtlesec-no/get-ninja@main
