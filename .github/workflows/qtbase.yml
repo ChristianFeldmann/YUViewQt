@@ -29,11 +29,11 @@ jobs:
           #   PACKAGE_INSTALL_CALL: sudo apt install
           #   PACKAGE_DEPENDENCIES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
           - os: windows-2019
-            OPEN_SSL_FILE: openSSL_1_1_1u_windows2019.zip
+            OPEN_SSL_FILE: openSSL_1_1_1u_win2019.zip
             UNZIP_COMMAND: 7z x
             ARTIFACT_NAME: qtBase_6.5.2_win2019
           - os: windows-2022
-            OPEN_SSL_FILE: openSSL_1_1_1u_windows2022.zip
+            OPEN_SSL_FILE: openSSL_1_1_1u_win2022.zip
             UNZIP_COMMAND: 7z x
             ARTIFACT_NAME: qtBase_6.5.2_win2022
           # - os: macos-11
