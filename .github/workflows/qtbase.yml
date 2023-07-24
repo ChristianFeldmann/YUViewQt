@@ -14,65 +14,64 @@ jobs:
     strategy:
       matrix:
         include: 
-          - os: ubuntu-16.04
-            OPEN_SSL_FILE: openSSL_1_1_1j_ubuntu_xenial.zip
+          - os: ubuntu-20.04
+            OPEN_SSL_FILE: openSSL_1_1_1u_ubuntu20.zip
             UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.0.2_xenial
+            ARTIFACT_NAME: qtBase_6.5.2_ubuntu20
             CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
             PACKAGE_INSTALL_CALL: sudo apt install
             PACKAGE_DEPENDENCIES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
-          - os: ubuntu-18.04
-            OPEN_SSL_FILE: openSSL_1_1_1j_ubuntu_bionic.zip
+          - os: ubuntu-22.04
+            OPEN_SSL_FILE: openSSL_1_1_1u_ubuntu22.zip
             UNZIP_COMMAND: unzip -qa
             ARTIFACT_NAME: qtBase_6.0.2_bionic
             CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
             PACKAGE_INSTALL_CALL: sudo apt install
             PACKAGE_DEPENDENCIES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
           - os: windows-2019
+            OPEN_SSL_FILE: openSSL_1_1_1u_windows2019.zip
             UNZIP_COMMAND: 7z x
-            ARTIFACT_NAME: qtBase_6.0.2_win
-          - os: macos-10.15
-            OPEN_SSL_FILE: openSSL_1_1_1j_mac.zip
+            ARTIFACT_NAME: qtBase_6.5.2_win2019
+          - os: windows-2022
+            OPEN_SSL_FILE: openSSL_1_1_1u_windows2022.zip
+            UNZIP_COMMAND: 7z x
+            ARTIFACT_NAME: qtBase_6.5.2_win2022
+          - os: macos-11
+            OPEN_SSL_FILE: openSSL_1_1_1u_mac11.zip
             UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.0.2_mac
-            CONFIGURE_EXTRA: 
-            PACKAGE_INSTALL_CALL: brew install
-            PACKAGE_DEPENDENCIES: ninja
+            ARTIFACT_NAME: qtBase_6.5.2_mac
+            CONFIGURE_EXTRA:
+          - os: macos-12
+            OPEN_SSL_FILE: openSSL_1_1_1u_mac12.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_6.5.2_mac
+            CONFIGURE_EXTRA:
     steps:
+    - uses: seanmiddleditch/gha-setup-ninja@master
+    - uses: ilammy/msvc-dev-cmd@v1
     - name: Download precompiled openSSL (windows)
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1j/openSSL_1_1_1j_win.zip -o openSSL.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1j/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
         7z x openSSL.zip -oopenSSL
       shell: cmd
-      if: matrix.os == 'windows-2019'
+      if: matrix.os == 'windows-2019' || matrix.os == 'windows-2022'
     - name: Download precompiled openSSL (mac/linux)
       run: |
         curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1j/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
         unzip -qa openSSL.zip -d openSSL
-      if: matrix.os != 'windows-2019'
+      if: matrix.os != 'windows-2019' && matrix.os != 'windows-2022'
     - name: Download QtBase Sources
       run: |
-        curl -L https://github.com/qt/qtbase/archive/v6.0.2.zip -o QtBase.zip
+        curl -L https://github.com/qt/qtbase/archive/v6.5.2.zip -o QtBase.zip
         ${{matrix.UNZIP_COMMAND}} QtBase.zip
-        mv qtbase-6.0.2 Qt_build
-    - name: Install windows dependencies
-      run: |
-        choco install ninja
-      shell: cmd
-      if: matrix.os == 'windows-2019'
-    - name: Install Linux/Mac Dependencies
+        mv qtbase-6.5.2 Qt_build
+    - name: Install Linux Dependencies
       run: ${{matrix.PACKAGE_INSTALL_CALL}} ${{matrix.PACKAGE_DEPENDENCIES}}
-      if: matrix.os != 'windows-2019'
-    - name: Update Cmake and GCC (ubuntu 16)
-      run: |
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 60
-      if: matrix.os == 'ubuntu-16.04'
+      if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
     - name: Build Windows
       run: |
         cd Qt_build
         mkdir .git
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX="d:\\a\YUViewQt\\YUViewQt\\Qt" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR="d:\\a\\YUViewQt\\YUViewQt\\openSSL" -DFEATURE_sql=OFF
         cmake --build . --parallel 2
         cmake --install .
@@ -80,7 +79,7 @@ jobs:
         7z a -r ${{matrix.ARTIFACT_NAME}}.zip Qt
         dir
       shell: cmd
-      if: matrix.os == 'windows-2019'
+      if: matrix.os == 'windows-2019' || matrix.os == 'windows-2022'
     - name: Build Mac/Linux
       run: |
         cd Qt_build
@@ -91,22 +90,17 @@ jobs:
         cd ..
         zip -r ${{matrix.ARTIFACT_NAME}}.zip Qt
         ls
-      if: matrix.os != 'windows-2019'
+      if: matrix.os != 'windows-2019' && matrix.os != 'windows-2022'
     # - name: Upload Artifact
     #   uses: actions/upload-artifact@v2
     #   with:
     #     name: ${{matrix.ARTIFACT_NAME}}
     #     path: ${{matrix.ARTIFACT_NAME}}.zip
-    - name: Upload
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        upload_url: ${{github.event.release.upload_url}}
-        asset_path: ${{matrix.ARTIFACT_NAME}}.zip
-        asset_name: ${{matrix.ARTIFACT_NAME}}.zip
-        asset_content_type: application/zip
-      if: github.event_name == 'release'
+        files: ${{matrix.ARTIFACT_NAME}}.zip
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
