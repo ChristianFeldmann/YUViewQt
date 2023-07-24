@@ -16,40 +16,33 @@ jobs:
         include: 
           - os: windows-2019
             UNZIP_COMMAND: 7z x
-            ARTIFACT_NAME: qtTools_6.0.2_win
-          - os: macos-10.15
-            OPEN_SSL_FILE: openSSL_1_1_1g_mac.zip
+            ARTIFACT_NAME: qtTools_6.5.2_win
+          - os: macos-11
+            OPEN_SSL_FILE: openSSL_1_1_1u_mac.zip
             UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtTools_6.0.2_mac
-    steps: 
+            ARTIFACT_NAME: qtTools_6.5.2_mac
+    steps:
+    - uses: turtlesec-no/get-ninja@main
+    - uses: ilammy/msvc-dev-cmd@v1
     - name: Download precompiled QtBase (Windows)
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-6.0.2/qtBase_6.0.2_win.zip -o Qt.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-6.5.2/qtBase_6.5.2_win2019.zip -o Qt.zip
         7z x Qt.zip
       shell: cmd
       if: matrix.os == 'windows-2019'
     - name: Download precompiled Qtbase (Mac)
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-6.0.2/qtBase_6.0.2_mac.zip -o Qt.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/QtBase-6.5.2/qtBase_6.5.2_mac11.zip -o Qt.zip
         unzip -qa Qt.zip
-      if: matrix.os == 'macos-10.15'
+      if: matrix.os == 'macos-11'
     - name: Download QtTools Sources
       run: |
-        curl -L https://github.com/qt/qttools/archive/v6.0.2.zip -o QtTools.zip
+        curl -L https://github.com/qt/qttools/archive/v6.5.2.zip -o QtTools.zip
         ${{matrix.UNZIP_COMMAND}} QtTools.zip
-        mv qttools-6.0.2 Qttools
-    - name: Install windows dependencies
-      run: |
-        choco install ninja
-      shell: cmd
-      if: matrix.os == 'windows-2019'
-    - name: Install Mac Dependencies
-      run: brew install ninja
-      if: matrix.os == 'macos-10.15'
+        mv qttools-6.5.2 Qttools
     - name: Build Windows
       run: |
         echo %Qt6_DIR%
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         mkdir build
         cd build
         cmake -G Ninja -DFEATURE_assistant=OFF -DFEATURE_designer=OFF -DFEATURE_distancefieldgenerator=OFF -DFEATURE_kmap2qmap=OFF -DFEATURE_linguist=OFF -DFEATURE_pixeltool=OFF -DFEATURE_qdbus=OFF -DFEATURE_qev=OFF -DFEATURE_qtattributionsscanner=OFF -DFEATURE_qtdiag=OFF -DFEATURE_qtplugininfo=OFF -DCMAKE_BUILD_TYPE=Release ../Qttools/
@@ -71,26 +64,21 @@ jobs:
         cmake --build . --parallel 2
         cd ..
         zip -r ${{matrix.ARTIFACT_NAME}}.zip build/bin/macdeployqt
-      if: matrix.os == 'macos-10.15'
+      if: matrix.os == 'macos-11'
       env:
         Qt6_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6
         Qt6CoreTools_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6CoreTools
         Qt6WidgetsTools_DIR: ${{ github.workspace }}/Qt/lib/cmake/Qt6WidgetsTools
     - name: Upload Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{matrix.ARTIFACT_NAME}}
         path: ${{matrix.ARTIFACT_NAME}}.zip
-    - name: Upload
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        upload_url: ${{github.event.release.upload_url}}
-        asset_path: ${{matrix.ARTIFACT_NAME}}.zip
-        asset_name: ${{matrix.ARTIFACT_NAME}}.zip
-        asset_content_type: application/zip
-      if: github.event_name == 'release'
+        files: ${{matrix.ARTIFACT_NAME}}.zip
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
