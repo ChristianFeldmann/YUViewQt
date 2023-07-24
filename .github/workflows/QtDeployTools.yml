@@ -18,7 +18,6 @@ jobs:
             UNZIP_COMMAND: 7z x
             ARTIFACT_NAME: qtTools_6.5.2_win
           - os: macos-11
-            OPEN_SSL_FILE: openSSL_1_1_1u_mac.zip
             UNZIP_COMMAND: unzip -qa
             ARTIFACT_NAME: qtTools_6.5.2_mac
     steps:
@@ -40,6 +39,9 @@ jobs:
         curl -L https://github.com/qt/qttools/archive/v6.5.2.zip -o QtTools.zip
         ${{matrix.UNZIP_COMMAND}} QtTools.zip
         mv qttools-6.5.2 Qttools
+    - name: Install Mac Dependencies
+      run: brew install llvm
+      if: matrix.os == 'macos-11'
     - name: Build Windows
       run: |
         echo %Qt6_DIR%
