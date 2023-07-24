@@ -47,7 +47,7 @@ jobs:
           #   ARTIFACT_NAME: qtBase_6.5.2_mac
           #   CONFIGURE_EXTRA:
     steps:
-    - uses: seanmiddleditch/gha-setup-ninja@master
+    - uses: turtlesec-no/get-ninja@main
     - uses: ilammy/msvc-dev-cmd@v1
     - name: Download precompiled openSSL (windows)
       run: |
