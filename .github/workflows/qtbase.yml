@@ -19,15 +19,11 @@ jobs:
             UNZIP_COMMAND: unzip -qa
             ARTIFACT_NAME: qtBase_6.5.2_ubuntu20
             CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
-            PACKAGE_INSTALL_CALL: sudo apt install
-            PACKAGE_DEPENDENCIES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
           - os: ubuntu-22.04
             OPEN_SSL_FILE: openSSL_1_1_1u_ubuntu22.zip
             UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.0.2_bionic
+            ARTIFACT_NAME: qtBase_6.5.2_ubuntu22
             CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
-            PACKAGE_INSTALL_CALL: sudo apt install
-            PACKAGE_DEPENDENCIES: build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
           - os: windows-2019
             OPEN_SSL_FILE: openSSL_1_1_1u_win2019.zip
             UNZIP_COMMAND: 7z x
@@ -66,7 +62,7 @@ jobs:
         ${{matrix.UNZIP_COMMAND}} QtBase.zip
         mv qtbase-6.5.2 Qt_build
     - name: Install Linux Dependencies
-      run: ${{matrix.PACKAGE_INSTALL_CALL}} ${{matrix.PACKAGE_DEPENDENCIES}}
+      run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
       if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
     - name: Build Windows
       run: |
