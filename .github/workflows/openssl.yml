@@ -15,28 +15,32 @@ jobs:
       matrix:
         os: ['ubuntu-20.04', 'ubuntu-22.04', 'windows-2019', 'windows-2022', 'macos-11', 'macos-12']
         include: 
-          - os: ubuntu-20.04
-            ARTIFACT_NAME: openSSL_1_1_1u_ubuntu20
-            UNZIP_COMMAND: unzip -qa
-            ZIP_COMMAND: zip -r
-          - os: ubuntu-22.04
-            ARTIFACT_NAME: openSSL_1_1_1u_ubuntu22
-            UNZIP_COMMAND: unzip -qa
-            ZIP_COMMAND: zip -r
-          - os: windows-2019
-            ARTIFACT_NAME: openSSL_1_1_1u_win2019
-            UNZIP_COMMAND: 7z x
-            ZIP_COMMAND: 7z a -r
-          - os: windows-2022
-            ARTIFACT_NAME: openSSL_1_1_1u_win2022
-            UNZIP_COMMAND: 7z x
-            ZIP_COMMAND: 7z a -r
-          - os: macos-11
-            ARTIFACT_NAME: openSSL_1_1_1u_mac11
+          # - os: ubuntu-20.04
+          #   ARTIFACT_NAME: openSSL_1_1_1u_ubuntu20
+          #   UNZIP_COMMAND: unzip -qa
+          #   ZIP_COMMAND: zip -r
+          # - os: ubuntu-22.04
+          #   ARTIFACT_NAME: openSSL_1_1_1w_ubuntu22
+          #   UNZIP_COMMAND: unzip -qa
+          #   ZIP_COMMAND: zip -r
+          # - os: windows-2019
+          #   ARTIFACT_NAME: openSSL_1_1_1w_win2019
+          #   UNZIP_COMMAND: 7z x
+          #   ZIP_COMMAND: 7z a -r
+          # - os: windows-2022
+          #   ARTIFACT_NAME: openSSL_1_1_1w_win2022
+          #   UNZIP_COMMAND: 7z x
+          #   ZIP_COMMAND: 7z a -r
+          - os: macos-12
+            ARTIFACT_NAME: openSSL_1_1_1w_mac12
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
           - os: macos-12
-            ARTIFACT_NAME: openSSL_1_1_1u_mac12
+            ARTIFACT_NAME: openSSL_1_1_1w_mac13
+            UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
+          - os: macos-14
+            ARTIFACT_NAME: openSSL_1_1_1w_mac14
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
     steps:
@@ -44,9 +48,9 @@ jobs:
       - uses: ilammy/setup-nasm@v1
       - name: Download sources
         run: |
-          curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1u.zip -o openSSL.zip
+          curl -L https://github.com/openssl/openssl/archive/OpenSSL_1_1_1w.zip -o openSSL.zip
           ${{matrix.UNZIP_COMMAND}} openSSL.zip
-          mv openssl-OpenSSL_1_1_1u openSSL
+          mv openssl-OpenSSL_1_1_1w openSSL
       - name: Install perl for windows build
         run: |
           choco install strawberryperl
