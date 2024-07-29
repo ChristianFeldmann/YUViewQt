@@ -14,34 +14,34 @@ jobs:
     strategy:
       matrix:
         include: 
-          # - os: ubuntu-20.04
-          #   OPEN_SSL_FILE: openSSL_1_1_1w_ubuntu20.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_6.7.2_ubuntu20
-          #   CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
-          # - os: ubuntu-22.04
-          #   OPEN_SSL_FILE: openSSL_1_1_1w_ubuntu22.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_6.7.2_ubuntu22
-          #   CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
-          # - os: windows-2019
-          #   OPEN_SSL_FILE: openSSL_1_1_1w_win2019.zip
-          #   UNZIP_COMMAND: 7z x
-          #   ARTIFACT_NAME: qtBase_6.7.2_win2019
-          # - os: windows-2022
-          #   OPEN_SSL_FILE: openSSL_1_1_1w_win2022.zip
-          #   UNZIP_COMMAND: 7z x
-          #   ARTIFACT_NAME: qtBase_6.7.2_win2022
-          # - os: macos-12
-          #   OPEN_SSL_FILE: openSSL_1_1_1w_mac12.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_6.7.2_mac12
-          #   CONFIGURE_EXTRA:
-          # - os: macos-13
-          #   OPEN_SSL_FILE: openSSL_1_1_1w_mac13.zip
-          #   UNZIP_COMMAND: unzip -qa
-          #   ARTIFACT_NAME: qtBase_6.7.2_mac13
-          #   CONFIGURE_EXTRA:
+          - os: ubuntu-20.04
+            OPEN_SSL_FILE: openSSL_1_1_1w_ubuntu20.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_6.7.2_ubuntu20
+            CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
+          - os: ubuntu-22.04
+            OPEN_SSL_FILE: openSSL_1_1_1w_ubuntu22.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_6.7.2_ubuntu22
+            CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
+          - os: windows-2019
+            OPEN_SSL_FILE: openSSL_1_1_1w_win2019.zip
+            UNZIP_COMMAND: 7z x
+            ARTIFACT_NAME: qtBase_6.7.2_win2019
+          - os: windows-2022
+            OPEN_SSL_FILE: openSSL_1_1_1w_win2022.zip
+            UNZIP_COMMAND: 7z x
+            ARTIFACT_NAME: qtBase_6.7.2_win2022
+          - os: macos-12
+            OPEN_SSL_FILE: openSSL_1_1_1w_mac12.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_6.7.2_mac12
+            CONFIGURE_EXTRA:
+          - os: macos-13
+            OPEN_SSL_FILE: openSSL_1_1_1w_mac13.zip
+            UNZIP_COMMAND: unzip -qa
+            ARTIFACT_NAME: qtBase_6.7.2_mac13
+            CONFIGURE_EXTRA:
           - os: macos-14
             OPEN_SSL_FILE: openSSL_1_1_1w_mac14.zip
             UNZIP_COMMAND: unzip -qa
@@ -93,11 +93,11 @@ jobs:
         zip -r ${{matrix.ARTIFACT_NAME}}.zip Qt
         ls
       if: matrix.os != 'windows-2019' && matrix.os != 'windows-2022'
-    # - name: Upload Artifact
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: ${{matrix.ARTIFACT_NAME}}
-    #     path: ${{matrix.ARTIFACT_NAME}}.zip
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{matrix.ARTIFACT_NAME}}
+        path: ${{matrix.ARTIFACT_NAME}}.zip
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
