@@ -49,7 +49,7 @@ jobs:
             CONFIGURE_EXTRA:
 
     steps:
-    - uses: turtlesec-no/get-ninja@main
+    - uses: aseprite/get-ninja@main
     - uses: ilammy/msvc-dev-cmd@v1
     - name: Download precompiled openSSL (windows)
       run: |
