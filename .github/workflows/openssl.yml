@@ -36,7 +36,7 @@ jobs:
             ARTIFACT_NAME: openSSL_1_1_1w_mac12
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
-          - os: macos-12
+          - os: macos-13
             ARTIFACT_NAME: openSSL_1_1_1w_mac13
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
