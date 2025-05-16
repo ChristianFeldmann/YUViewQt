@@ -59,7 +59,7 @@ jobs:
           set CXX=
           set CXX_FOR_BUILD=
         shell: cmd
-        if: runner.os	== "Windows"
+        if: runner.os	== 'Windows'
       - name: Build Windows
         run: |
           cd openSSL
@@ -74,7 +74,7 @@ jobs:
           copy openSSL\libssl-1_1-x64.dll artifact
           copy openSSL\libssl.lib artifact
         shell: cmd
-        if: runner.os	== "Windows"
+        if: runner.os	== 'Windows'
       - name: Build Mac
         run: |
           mkdir dist
@@ -88,7 +88,7 @@ jobs:
           mkdir artifact
           cp -R openSSL/include artifact
           cp openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
-        if: runner.os	== "macOS"
+        if: runner.os	== 'macOS'
       - name: Build Linux
         run: |
           cd openSSL
@@ -98,7 +98,7 @@ jobs:
           mkdir artifact
           cp -R openSSL/include artifact
           cp openSSL/libcrypto.* openSSL/libssl.* artifact
-        if: runner.os	== "Linux"
+        if: runner.os	== 'Linux'
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
