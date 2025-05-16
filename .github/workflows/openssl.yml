@@ -19,14 +19,14 @@ jobs:
           #   ARTIFACT_NAME: openSSL_3_5_0_ubuntu22
           #   UNZIP_COMMAND: unzip -qa
           #   ZIP_COMMAND: zip -r
-          - os: ubuntu-24.04
-            ARTIFACT_NAME: openSSL_3_5_0_ubuntu24
-            UNZIP_COMMAND: unzip -qa
-            ZIP_COMMAND: zip -r
-          # - os: windows-2019
-          #   ARTIFACT_NAME: openSSL_3_5_0_win2019
-          #   UNZIP_COMMAND: 7z x
-          #   ZIP_COMMAND: 7z a -r
+          # - os: ubuntu-24.04
+          #   ARTIFACT_NAME: openSSL_3_5_0_ubuntu24
+          #   UNZIP_COMMAND: unzip -qa
+          #   ZIP_COMMAND: zip -r
+          - os: windows-2019
+            ARTIFACT_NAME: openSSL_3_5_0_win2019
+            UNZIP_COMMAND: 7z x
+            ZIP_COMMAND: 7z a -r
           # - os: windows-2025
           #   ARTIFACT_NAME: openSSL_3_5_0_win2025
           #   UNZIP_COMMAND: 7z x
@@ -63,9 +63,9 @@ jobs:
       - name: Build Windows
         run: |
           cd openSSL
-          set PATH=%PATH%;"C:\Program Files\NASM"
           C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
           nmake
+          dir
           cd ..
           mkdir artifact
           robocopy openSSL\include artifact\include /e
