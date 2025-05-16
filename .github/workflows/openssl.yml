@@ -71,9 +71,9 @@ jobs:
           cd ..
           mkdir artifact
           robocopy openSSL\include artifact\include /e
-          copy openSSL\libcrypto-1_1-x64.dll artifact
+          copy openSSL\libcrypto-3-x64.dll artifact
           copy openSSL\libcrypto.lib artifact
-          copy openSSL\libssl-1_1-x64.dll artifact
+          copy openSSL\libssl-3-x64.dll artifact
           copy openSSL\libssl.lib artifact
         shell: cmd
         if: runner.os	== 'Windows'
