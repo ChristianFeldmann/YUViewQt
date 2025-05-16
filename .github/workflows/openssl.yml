@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ['windows-2019']
+        os: ['windows-2019', 'macos-13']
         include: 
           # - os: ubuntu-22.04
           #   ARTIFACT_NAME: openSSL_3_5_0_ubuntu22
@@ -31,14 +31,10 @@ jobs:
           #   ARTIFACT_NAME: openSSL_3_5_0_win2025
           #   UNZIP_COMMAND: 7z x
           #   ZIP_COMMAND: 7z a -r
-          # - os: macos-12
-          #   ARTIFACT_NAME: openSSL_1_1_1w_mac12
-          #   UNZIP_COMMAND: unzip -qa
-          #   ZIP_COMMAND: zip -r
-          # - os: macos-13
-          #   ARTIFACT_NAME: openSSL_1_1_1w_mac13
-          #   UNZIP_COMMAND: unzip -qa
-          #   ZIP_COMMAND: zip -r
+          - os: macos-13
+            ARTIFACT_NAME: openSSL_3_5_0_mac13
+            UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
           # - os: macos-14
           #   ARTIFACT_NAME: openSSL_1_1_1w_mac14
           #   UNZIP_COMMAND: unzip -qa
@@ -83,13 +79,13 @@ jobs:
           cd openSSL
           pwd
           ls
-          ./Configure --prefix=$PWD/dist shared darwin64-x86_64-cc
-          make depend
+          ./Configure --prefix=$PWD/dist shared
           make -j 2
+          ls
           cd ..
           mkdir artifact
           cp -R openSSL/include artifact
-          cp openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
+          cp openSSL/libcrypto.3.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.3.5.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
         if: runner.os	== 'macOS'
       - name: Build Linux
         run: |
