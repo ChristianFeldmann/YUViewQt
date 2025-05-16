@@ -46,7 +46,7 @@ jobs:
         run: |
           curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
           ${{matrix.UNZIP_COMMAND}} openSSL.zip
-          mv openssl-OpenSSL_3_5_0 openSSL
+          mv openssl-openssl-3.5.0 openSSL
       - name: Install perl for windows build
         run: |
           choco install strawberryperl
@@ -78,7 +78,7 @@ jobs:
           cd openSSL
           pwd
           ls
-          ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc
+          ./Configure --prefix=$PWD/dist shared darwin64-x86_64-cc
           make depend
           make -j 2
           cd ..
@@ -88,14 +88,8 @@ jobs:
         if: matrix.os == 'macos-12' || matrix.os == 'macos-13' || matrix.os == 'macos-14'
       - name: Build Linux
         run: |
-          mkdir dist
-          pwd
-          ls
           cd openSSL
-          pwd
-          ls
-          ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared linux-x86_64
-          make depend
+          ./Configure shared
           make -j 2
           cd ..
           mkdir artifact
