@@ -13,10 +13,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ['ubuntu-22.04']
+        os: ['ubuntu-24.04']
         include: 
-          - os: ubuntu-22.04
-            ARTIFACT_NAME: openSSL_3_5_0_ubuntu22
+          # - os: ubuntu-22.04
+          #   ARTIFACT_NAME: openSSL_3_5_0_ubuntu22
+          #   UNZIP_COMMAND: unzip -qa
+          #   ZIP_COMMAND: zip -r
+          - os: ubuntu-24.04
+            ARTIFACT_NAME: openSSL_3_5_0_ubuntu24
             UNZIP_COMMAND: unzip -qa
             ZIP_COMMAND: zip -r
           # - os: windows-2019
