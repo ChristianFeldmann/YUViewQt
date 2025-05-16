@@ -45,6 +45,7 @@ jobs:
           #   ZIP_COMMAND: zip -r
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
+      - uses: ilammy/setup-nasm@v1
       - name: Download sources
         run: |
           curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
@@ -63,6 +64,7 @@ jobs:
       - name: Build Windows
         run: |
           cd openSSL
+          set PATH=%PATH%;"C:\Program Files\NASM"
           C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
           nmake
           dir
