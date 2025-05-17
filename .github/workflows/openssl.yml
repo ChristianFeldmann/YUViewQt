@@ -14,30 +14,30 @@ jobs:
     strategy:
       matrix:
         config:
-          # - os: ubuntu-22.04
-          #   artifactName: openSSL_3_5_0_ubuntu22
-          #   unzipCommand: unzip -qa
-          #   zipCommand: zip -r
-          # - os: ubuntu-24.04
-          #   artifactName: openSSL_3_5_0_ubuntu24
-          #   unzipCommand: unzip -qa
-          #   zipCommand: zip -r
+          - os: ubuntu-22.04
+            artifactName: openSSL_3_5_0_ubuntu22
+            unzipCommand: unzip -qa
+            zipCommand: zip -r
+          - os: ubuntu-24.04
+            artifactName: openSSL_3_5_0_ubuntu24
+            unzipCommand: unzip -qa
+            zipCommand: zip -r
           - os: windows-2019
             artifactName: openSSL_3_5_0_win2019
             unzipCommand: 7z x
             zipCommand: 7z a -r
-          # - os: windows-2025
-          #   artifactName: openSSL_3_5_0_win2025
-          #   unzipCommand: 7z x
-          #   zipCommand: 7z a -r
-          # - os: macos-13
-          #   artifactName: openSSL_3_5_0_mac13
-          #   unzipCommand: unzip -qa
-          #   zipCommand: zip -r
-          # - os: macos-15
-          #   artifactName: openSSL_3_5_0_mac15
-          #   unzipCommand: unzip -qa
-          #   zipCommand: zip -r
+          - os: windows-2025
+            artifactName: openSSL_3_5_0_win2025
+            unzipCommand: 7z x
+            zipCommand: 7z a -r
+          - os: macos-13
+            artifactName: openSSL_3_5_0_mac13
+            unzipCommand: unzip -qa
+            zipCommand: zip -r
+          - os: macos-15
+            artifactName: openSSL_3_5_0_mac15
+            unzipCommand: unzip -qa
+            zipCommand: zip -r
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: ilammy/setup-nasm@v1
