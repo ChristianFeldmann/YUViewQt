@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ['windows-2019', 'macos-13']
+        os: ['macos-15']
         include: 
           # - os: ubuntu-22.04
           #   ARTIFACT_NAME: openSSL_3_5_0_ubuntu22
@@ -31,14 +31,14 @@ jobs:
           #   ARTIFACT_NAME: openSSL_3_5_0_win2025
           #   UNZIP_COMMAND: 7z x
           #   ZIP_COMMAND: 7z a -r
-          - os: macos-13
-            ARTIFACT_NAME: openSSL_3_5_0_mac13
-            UNZIP_COMMAND: unzip -qa
-            ZIP_COMMAND: zip -r
-          # - os: macos-14
-          #   ARTIFACT_NAME: openSSL_1_1_1w_mac14
+          # - os: macos-13
+          #   ARTIFACT_NAME: openSSL_3_5_0_mac13
           #   UNZIP_COMMAND: unzip -qa
           #   ZIP_COMMAND: zip -r
+          - os: macos-15
+            ARTIFACT_NAME: openSSL_3_5_0_mac15
+            UNZIP_COMMAND: unzip -qa
+            ZIP_COMMAND: zip -r
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: ilammy/setup-nasm@v1
