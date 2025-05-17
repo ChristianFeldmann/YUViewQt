@@ -23,10 +23,10 @@ jobs:
           #   ARTIFACT_NAME: openSSL_3_5_0_ubuntu24
           #   UNZIP_COMMAND: unzip -qa
           #   ZIP_COMMAND: zip -r
-          - os: windows-2019
-            ARTIFACT_NAME: openSSL_3_5_0_win2019
-            UNZIP_COMMAND: 7z x
-            ZIP_COMMAND: 7z a -r
+          # - os: windows-2019
+          #   ARTIFACT_NAME: openSSL_3_5_0_win2019
+          #   UNZIP_COMMAND: 7z x
+          #   ZIP_COMMAND: 7z a -r
           # - os: windows-2025
           #   ARTIFACT_NAME: openSSL_3_5_0_win2025
           #   UNZIP_COMMAND: 7z x
@@ -85,7 +85,7 @@ jobs:
           cd ..
           mkdir artifact
           cp -R openSSL/include artifact
-          cp openSSL/libcrypto.3.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.3.5.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
+          cp openSSL/libcrypto.3.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.3.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
         if: runner.os	== 'macOS'
       - name: Build Linux
         run: |
