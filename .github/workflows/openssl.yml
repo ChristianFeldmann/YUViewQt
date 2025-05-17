@@ -10,41 +10,41 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.build.os }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
-        build:
-          - os: ubuntu-22.04
-            ARTIFACT_NAME: openSSL_3_5_0_ubuntu22
-            UNZIP_COMMAND: unzip -qa
-            ZIP_COMMAND: zip -r
+        config:
+          # - os: ubuntu-22.04
+          #   artifactName: openSSL_3_5_0_ubuntu22
+          #   unzipCommand: unzip -qa
+          #   zipCommand: zip -r
           # - os: ubuntu-24.04
-          #   ARTIFACT_NAME: openSSL_3_5_0_ubuntu24
-          #   UNZIP_COMMAND: unzip -qa
-          #   ZIP_COMMAND: zip -r
-          # - os: windows-2019
-          #   ARTIFACT_NAME: openSSL_3_5_0_win2019
-          #   UNZIP_COMMAND: 7z x
-          #   ZIP_COMMAND: 7z a -r
+          #   artifactName: openSSL_3_5_0_ubuntu24
+          #   unzipCommand: unzip -qa
+          #   zipCommand: zip -r
+          - os: windows-2019
+            artifactName: openSSL_3_5_0_win2019
+            unzipCommand: 7z x
+            zipCommand: 7z a -r
           # - os: windows-2025
-          #   ARTIFACT_NAME: openSSL_3_5_0_win2025
-          #   UNZIP_COMMAND: 7z x
-          #   ZIP_COMMAND: 7z a -r
+          #   artifactName: openSSL_3_5_0_win2025
+          #   unzipCommand: 7z x
+          #   zipCommand: 7z a -r
           # - os: macos-13
-          #   ARTIFACT_NAME: openSSL_3_5_0_mac13
-          #   UNZIP_COMMAND: unzip -qa
-          #   ZIP_COMMAND: zip -r
+          #   artifactName: openSSL_3_5_0_mac13
+          #   unzipCommand: unzip -qa
+          #   zipCommand: zip -r
           # - os: macos-15
-          #   ARTIFACT_NAME: openSSL_3_5_0_mac15
-          #   UNZIP_COMMAND: unzip -qa
-          #   ZIP_COMMAND: zip -r
+          #   artifactName: openSSL_3_5_0_mac15
+          #   unzipCommand: unzip -qa
+          #   zipCommand: zip -r
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: ilammy/setup-nasm@v1
       - name: Download sources
         run: |
           curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
-          ${{matrix.build.UNZIP_COMMAND}} openSSL.zip
+          ${{matrix.config.unzipCommand}} openSSL.zip
           mv openssl-openssl-3.5.0 openSSL
       - name: Install perl for windows build
         run: |
@@ -99,18 +99,18 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.build.ARTIFACT_NAME}}
+          name: ${{matrix.config.artifactName}}
           path: artifact
       - name: Zip files
         run: |
           cd artifact
-          ${{matrix.build.ZIP_COMMAND}} ../${{matrix.build.ARTIFACT_NAME}}.zip *
+          ${{matrix.config.zipCommand}} ../${{matrix.config.artifactName}}.zip *
           cd ..
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: ${{matrix.build.ARTIFACT_NAME}}.zip
+          files: ${{matrix.config.artifactName}}.zip
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
