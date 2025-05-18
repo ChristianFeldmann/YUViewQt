@@ -14,38 +14,33 @@ jobs:
     strategy:
       matrix:
         config:
-          - os: ubuntu-22.04
-            openSSLFile: openSSL_3_5_0_ubuntu22.zip
-            unzipCommand: unzip -qa
-            artifactName: qtBase_6.7.2_ubuntu20
-            configureExtra: -DFEATURE_system_xcb_xinput=OFF
+          # - os: ubuntu-22.04
+          #   openSSLFile: openSSL_3_5_0_ubuntu22.zip
+          #   unzipCommand: unzip -qa
+          #   artifactName: qtBase_6.9.0_ubuntu20
+          #   configureExtra: -DFEATURE_system_xcb_xinput=OFF
           # - os: ubuntu-22.04
           #   openSSLFile: openSSL_1_1_1w_ubuntu22.zip
           #   unzipCommand: unzip -qa
-          #   artifactName: qtBase_6.7.2_ubuntu22
+          #   artifactName: qtBase_6.9.0_ubuntu22
           #   configureExtra: -DFEATURE_system_xcb_xinput=OFF
           # - os: windows-2019
           #   openSSLFile: openSSL_1_1_1w_win2019.zip
           #   unzipCommand: 7z x
-          #   artifactName: qtBase_6.7.2_win2019
+          #   artifactName: qtBase_6.9.0_win2019
           # - os: windows-2022
           #   openSSLFile: openSSL_1_1_1w_win2022.zip
           #   unzipCommand: 7z x
-          #   artifactName: qtBase_6.7.2_win2022
-          # - os: macos-12
-          #   openSSLFile: openSSL_1_1_1w_mac12.zip
-          #   unzipCommand: unzip -qa
-          #   artifactName: qtBase_6.7.2_mac12
-          #   configureExtra:
-          # - os: macos-13
-          #   openSSLFile: openSSL_1_1_1w_mac13.zip
-          #   unzipCommand: unzip -qa
-          #   artifactName: qtBase_6.7.2_mac13
-          #   configureExtra:
+          #   artifactName: qtBase_6.9.0_win2022
+          - os: macos-13
+            openSSLFile: openSSL_3_5_0_mac13.zip
+            unzipCommand: unzip -qa
+            artifactName: qtBase_6.9.0_mac13
+            configureExtra:
           # - os: macos-14
           #   openSSLFile: openSSL_1_1_1w_mac14.zip
           #   unzipCommand: unzip -qa
-          #   artifactName: qtBase_6.7.2_mac14
+          #   artifactName: qtBase_6.9.0_mac14
           #   configureExtra:
 
     steps:
