@@ -10,43 +10,42 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
-        os: ['ubuntu-22.04']
-        include: 
+        config:
           - os: ubuntu-22.04
-            ARTIFACT_NAME: openSSL_3_5_0_ubuntu22
-            UNZIP_COMMAND: unzip -qa
-            ZIP_COMMAND: zip -r
-          # - os: windows-2019
-          #   ARTIFACT_NAME: openSSL_1_1_1w_win2019
-          #   UNZIP_COMMAND: 7z x
-          #   ZIP_COMMAND: 7z a -r
-          # - os: windows-2022
-          #   ARTIFACT_NAME: openSSL_1_1_1w_win2022
-          #   UNZIP_COMMAND: 7z x
-          #   ZIP_COMMAND: 7z a -r
-          # - os: macos-12
-          #   ARTIFACT_NAME: openSSL_1_1_1w_mac12
-          #   UNZIP_COMMAND: unzip -qa
-          #   ZIP_COMMAND: zip -r
-          # - os: macos-13
-          #   ARTIFACT_NAME: openSSL_1_1_1w_mac13
-          #   UNZIP_COMMAND: unzip -qa
-          #   ZIP_COMMAND: zip -r
-          # - os: macos-14
-          #   ARTIFACT_NAME: openSSL_1_1_1w_mac14
-          #   UNZIP_COMMAND: unzip -qa
-          #   ZIP_COMMAND: zip -r
+            artifactName: openSSL_3_5_0_ubuntu22
+            unzipCommand: unzip -qa
+            zipCommand: zip -r
+          - os: ubuntu-24.04
+            artifactName: openSSL_3_5_0_ubuntu24
+            unzipCommand: unzip -qa
+            zipCommand: zip -r
+          - os: windows-2019
+            artifactName: openSSL_3_5_0_win2019
+            unzipCommand: 7z x
+            zipCommand: 7z a -r
+          - os: windows-2025
+            artifactName: openSSL_3_5_0_win2025
+            unzipCommand: 7z x
+            zipCommand: 7z a -r
+          - os: macos-13
+            artifactName: openSSL_3_5_0_mac13
+            unzipCommand: unzip -qa
+            zipCommand: zip -r
+          - os: macos-15
+            artifactName: openSSL_3_5_0_mac15
+            unzipCommand: unzip -qa
+            zipCommand: zip -r
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: ilammy/setup-nasm@v1
       - name: Download sources
         run: |
           curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
-          ${{matrix.UNZIP_COMMAND}} openSSL.zip
-          mv openssl-OpenSSL_3_5_0 openSSL
+          ${{matrix.config.unzipCommand}} openSSL.zip
+          mv openssl-openssl-3.5.0 openSSL
       - name: Install perl for windows build
         run: |
           choco install strawberryperl
@@ -56,67 +55,62 @@ jobs:
           set CXX=
           set CXX_FOR_BUILD=
         shell: cmd
-        if: matrix.os == 'windows-2019' || matrix.os == 'windows-2022'
+        if: runner.os	== 'Windows'
       - name: Build Windows
         run: |
           cd openSSL
           set PATH=%PATH%;"C:\Program Files\NASM"
           C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
           nmake
+          dir
           cd ..
           mkdir artifact
           robocopy openSSL\include artifact\include /e
-          copy openSSL\libcrypto-1_1-x64.dll artifact
+          copy openSSL\libcrypto-3-x64.dll artifact
           copy openSSL\libcrypto.lib artifact
-          copy openSSL\libssl-1_1-x64.dll artifact
+          copy openSSL\libssl-3-x64.dll artifact
           copy openSSL\libssl.lib artifact
         shell: cmd
-        if: matrix.os == 'windows-2019' || matrix.os == 'windows-2022'
+        if: runner.os	== 'Windows'
       - name: Build Mac
         run: |
           mkdir dist
           cd openSSL
           pwd
           ls
-          ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared darwin64-x86_64-cc
-          make depend
+          ./Configure --prefix=$PWD/dist shared
           make -j 2
+          ls
           cd ..
           mkdir artifact
           cp -R openSSL/include artifact
-          cp openSSL/libcrypto.1.1.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.1.1.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
-        if: matrix.os == 'macos-12' || matrix.os == 'macos-13' || matrix.os == 'macos-14'
+          cp openSSL/libcrypto.3.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.3.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
+        if: runner.os	== 'macOS'
       - name: Build Linux
         run: |
-          mkdir dist
-          pwd
-          ls
           cd openSSL
-          pwd
-          ls
-          ./Configure --prefix=$PWD/dist no-idea no-mdc2 no-rc5 shared linux-x86_64
-          make depend
+          ./Configure shared
           make -j 2
           cd ..
           mkdir artifact
           cp -R openSSL/include artifact
           cp openSSL/libcrypto.* openSSL/libssl.* artifact
-        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
+        if: runner.os	== 'Linux'
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.ARTIFACT_NAME}}
+          name: ${{matrix.config.artifactName}}
           path: artifact
       - name: Zip files
         run: |
           cd artifact
-          ${{matrix.ZIP_COMMAND}} ../${{matrix.ARTIFACT_NAME}}.zip *
+          ${{matrix.config.zipCommand}} ../${{matrix.config.artifactName}}.zip *
           cd ..
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: ${{matrix.ARTIFACT_NAME}}.zip
+          files: ${{matrix.config.artifactName}}.zip
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
