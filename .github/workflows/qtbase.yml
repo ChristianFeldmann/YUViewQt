@@ -65,7 +65,7 @@ jobs:
         mv qtbase-6.9.0 Qt_build
     - name: Install Linux Dependencies
       run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
-      if: if: runner.os == 'Linux'
+      if: runner.os == 'Linux'
     - name: Build Windows
       run: |
         cd Qt_build
