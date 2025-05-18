@@ -15,7 +15,7 @@ jobs:
       matrix:
         config:
           - os: ubuntu-22.04
-            openSSLFile: openSSL_1_1_1w_ubuntu22.zip
+            openSSLFile: openSSL_3_5_0_ubuntu22.zip
             unzipCommand: unzip -qa
             artifactName: qtBase_6.7.2_ubuntu20
             configureExtra: -DFEATURE_system_xcb_xinput=OFF
