@@ -24,19 +24,19 @@ jobs:
           #   unzipCommand: unzip -qa
           #   artifactName: qtBase_6.9.0_ubuntu22
           #   configureExtra: -DFEATURE_system_xcb_xinput=OFF
-          # - os: windows-2019
-          #   openSSLFile: openSSL_1_1_1w_win2019.zip
-          #   unzipCommand: 7z x
-          #   artifactName: qtBase_6.9.0_win2019
+          - os: windows-2019
+            openSSLFile: openSSL_3_5_0_win2019.zip
+            unzipCommand: 7z x
+            artifactName: qtBase_6.9.0_win2019
           # - os: windows-2022
           #   openSSLFile: openSSL_1_1_1w_win2022.zip
           #   unzipCommand: 7z x
           #   artifactName: qtBase_6.9.0_win2022
-          - os: macos-13
-            openSSLFile: openSSL_3_5_0_mac13.zip
-            unzipCommand: unzip -qa
-            artifactName: qtBase_6.9.0_mac13
-            configureExtra:
+          # - os: macos-13
+          #   openSSLFile: openSSL_3_5_0_mac13.zip
+          #   unzipCommand: unzip -qa
+          #   artifactName: qtBase_6.9.0_mac13
+          #   configureExtra:
           # - os: macos-14
           #   openSSLFile: openSSL_1_1_1w_mac14.zip
           #   unzipCommand: unzip -qa
@@ -46,7 +46,7 @@ jobs:
     steps:
     - uses: aseprite/get-ninja@main
     - uses: ilammy/msvc-dev-cmd@v1
-    - name: Download precompiled openSSL (windows)
+    - name: Download precompiled openSSL
       run: |
         mkdir openSSL
         cd openSSL
