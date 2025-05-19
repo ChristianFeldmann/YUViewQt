@@ -23,6 +23,7 @@ jobs:
         run: |
           echo "Artifact name: name=openSSL-3-5-0-${{ matrix.os }}"
           echo "name=openSSL-3-5-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+        shell: bash
       - name: Download sources
         run: curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
       - name: Unzip sources (Windows)
