@@ -13,8 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # os: [ubuntu-22.04, ubuntu-24.04, windows-2019, windows-2022, windows-2025, macos-13, macos-14, macos-15]
-        os: [windows-2019]
+        os: [ubuntu-22.04, ubuntu-24.04, windows-2019, windows-2022, windows-2025, macos-13, macos-14, macos-15]
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: ilammy/setup-nasm@v1
@@ -32,75 +31,75 @@ jobs:
           mv openssl-openssl-3.5.0 openSSL
           echo "Artifact name ${{steps.artifact.outputs.name}}"
         if: runner.os	== 'Windows'
-      # - name: Unzip sources (Windows)
-      #   run: |
-      #     unzip -qa openSSL.zip
-      #     mv openssl-openssl-3.5.0 openSSL
-      #   if: runner.os	!= 'Windows'
-      # - name: Install perl for windows build
-      #   run: |
-      #     choco install strawberryperl
-      #     perl --version
-      #     set CC=
-      #     set CC_FOR_BUILD=
-      #     set CXX=
-      #     set CXX_FOR_BUILD=
-      #   shell: cmd
-      #   if: runner.os	== 'Windows'
-      # - name: Build Windows
-      #   run: |
-      #     cd openSSL
-      #     set PATH=%PATH%;"C:\Program Files\NASM"
-      #     C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
-      #     nmake
-      #     cd ..
-      #     mkdir artifact
-      #     robocopy openSSL\include artifact\include /e
-      #     copy openSSL\libcrypto-3-x64.dll artifact
-      #     copy openSSL\libcrypto.lib artifact
-      #     copy openSSL\libssl-3-x64.dll artifact
-      #     copy openSSL\libssl.lib artifact
-      #   shell: cmd
-      #   if: runner.os	== 'Windows'
-      # - name: Build Mac
-      #   run: |
-      #     mkdir dist
-      #     cd openSSL
-      #     ./Configure --prefix=$PWD/dist shared
-      #     make -j 2
-      #     cd ..
-      #     mkdir artifact
-      #     cp -R openSSL/include artifact
-      #     cp openSSL/libcrypto.3.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.3.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
-      #   if: runner.os	== 'macOS'
-      # - name: Build Linux
-      #   run: |
-      #     cd openSSL
-      #     ./Configure shared
-      #     make -j 2
-      #     cd ..
-      #     mkdir artifact
-      #     cp -R openSSL/include artifact
-      #     cp openSSL/libcrypto.* openSSL/libssl.* artifact
-      #   if: runner.os	== 'Linux'
-      # - name: Upload Artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: ${{steps.artifact.outputs.name}}
-      #     path: artifact
-      # - name: Zip files
-      #   run: |
-      #     cd artifact
-      #     if [ ${{ runner.os }} == 'Windows' ]; then
-      #       7z a -r ../${{steps.artifact.outputs.name}}.zip *
-      #     else
-      #       zip -r ../${{steps.artifact.outputs.name}}.zip *
-      #     fi
-      # - name: Release
-      #   uses: softprops/action-gh-release@v2
-      #   if: startsWith(github.ref, 'refs/tags/')
-      #   with:
-      #     files: ${{steps.artifact.outputs.name}}.zip
+      - name: Unzip sources (Windows)
+        run: |
+          unzip -qa openSSL.zip
+          mv openssl-openssl-3.5.0 openSSL
+        if: runner.os	!= 'Windows'
+      - name: Install perl for windows build
+        run: |
+          choco install strawberryperl
+          perl --version
+          set CC=
+          set CC_FOR_BUILD=
+          set CXX=
+          set CXX_FOR_BUILD=
+        shell: cmd
+        if: runner.os	== 'Windows'
+      - name: Build Windows
+        run: |
+          cd openSSL
+          set PATH=%PATH%;"C:\Program Files\NASM"
+          C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
+          nmake
+          cd ..
+          mkdir artifact
+          robocopy openSSL\include artifact\include /e
+          copy openSSL\libcrypto-3-x64.dll artifact
+          copy openSSL\libcrypto.lib artifact
+          copy openSSL\libssl-3-x64.dll artifact
+          copy openSSL\libssl.lib artifact
+        shell: cmd
+        if: runner.os	== 'Windows'
+      - name: Build Mac
+        run: |
+          mkdir dist
+          cd openSSL
+          ./Configure --prefix=$PWD/dist shared
+          make -j 2
+          cd ..
+          mkdir artifact
+          cp -R openSSL/include artifact
+          cp openSSL/libcrypto.3.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.3.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
+        if: runner.os	== 'macOS'
+      - name: Build Linux
+        run: |
+          cd openSSL
+          ./Configure shared
+          make -j 2
+          cd ..
+          mkdir artifact
+          cp -R openSSL/include artifact
+          cp openSSL/libcrypto.* openSSL/libssl.* artifact
+        if: runner.os	== 'Linux'
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{steps.artifact.outputs.name}}
+          path: artifact
+      - name: Zip files
+        run: |
+          cd artifact
+          if [ ${{ runner.os }} == 'Windows' ]; then
+            7z a -r ../${{steps.artifact.outputs.name}}.zip *
+          else
+            zip -r ../${{steps.artifact.outputs.name}}.zip *
+          fi
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ${{steps.artifact.outputs.name}}.zip
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
