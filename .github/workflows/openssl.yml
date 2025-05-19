@@ -29,7 +29,6 @@ jobs:
         run: |
           7z x openSSL.zip
           mv openssl-openssl-3.5.0 openSSL
-          echo "Artifact name ${{steps.artifact.outputs.name}}"
         if: runner.os	== 'Windows'
       - name: Unzip sources (Windows)
         run: |
