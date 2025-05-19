@@ -53,8 +53,10 @@ jobs:
         run: |
           curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
           if [ ${{ runner.os }} == 'Windows' ]; then
+            echo "Windows branch"
             7z x openSSL.zip
           else
+            echo "Non-Windows branch" 
             zip -r openSSL.zip
           fi
           mv openssl-openssl-3.5.0 openSSL
