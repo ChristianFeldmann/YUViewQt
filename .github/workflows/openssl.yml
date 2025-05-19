@@ -23,14 +23,17 @@ jobs:
           echo "Artifact name: name=openSSL-3-5-0-${{ matrix.os }}"
           echo "name=openSSL-3-5-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
       - name: Download sources
+        run: curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
+      - name: Unzip sources (Windows)
         run: |
-          curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
-          if [ ${{ runner.os }} == 'Windows' ]; then
-            7z x openSSL.zip
-          else
-            unzip -qa openSSL.zip
-          fi
+          7z x openSSL.zip
           mv openssl-openssl-3.5.0 openSSL
+        if: runner.os	== 'Windows'
+      - name: Unzip sources (Windows)
+        run: |
+          unzip -qa openSSL.zip
+          mv openssl-openssl-3.5.0 openSSL
+        if: runner.os	!= 'Windows'
       - name: Install perl for windows build
         run: |
           choco install strawberryperl
