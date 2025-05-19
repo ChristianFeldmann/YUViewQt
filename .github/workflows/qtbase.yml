@@ -83,7 +83,6 @@ jobs:
         cmake --install .
         cd ..
         7z a -r ${{steps.artifacts.outputs.output}}.zip Qt
-        dir
     - name: Build Mac/Linux
       if: runner.os != 'Windows'
       run: |
@@ -94,7 +93,6 @@ jobs:
         cmake --install .
         cd ..
         zip -r ${{steps.artifacts.outputs.output}}.zip Qt
-        ls
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
