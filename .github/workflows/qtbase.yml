@@ -13,64 +13,38 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        include: 
-          - os: ubuntu-20.04
-            OPEN_SSL_FILE: openSSL_1_1_1w_ubuntu20.zip
-            UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.7.2_ubuntu20
-            CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
-          - os: ubuntu-22.04
-            OPEN_SSL_FILE: openSSL_1_1_1w_ubuntu22.zip
-            UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.7.2_ubuntu22
-            CONFIGURE_EXTRA: -DFEATURE_system_xcb_xinput=OFF
-          - os: windows-2019
-            OPEN_SSL_FILE: openSSL_1_1_1w_win2019.zip
-            UNZIP_COMMAND: 7z x
-            ARTIFACT_NAME: qtBase_6.7.2_win2019
-          - os: windows-2022
-            OPEN_SSL_FILE: openSSL_1_1_1w_win2022.zip
-            UNZIP_COMMAND: 7z x
-            ARTIFACT_NAME: qtBase_6.7.2_win2022
-          - os: macos-12
-            OPEN_SSL_FILE: openSSL_1_1_1w_mac12.zip
-            UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.7.2_mac12
-            CONFIGURE_EXTRA:
-          - os: macos-13
-            OPEN_SSL_FILE: openSSL_1_1_1w_mac13.zip
-            UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.7.2_mac13
-            CONFIGURE_EXTRA:
-          - os: macos-14
-            OPEN_SSL_FILE: openSSL_1_1_1w_mac14.zip
-            UNZIP_COMMAND: unzip -qa
-            ARTIFACT_NAME: qtBase_6.7.2_mac14
-            CONFIGURE_EXTRA:
+        os: [ubuntu-22.04, ubuntu-24.04, windows-2022, windows-2025, macos-13, macos-15]
 
     steps:
     - uses: aseprite/get-ninja@main
     - uses: ilammy/msvc-dev-cmd@v1
-    - name: Download precompiled openSSL (windows)
+    - name: Set artifact name
+      id: artifacts
+      shell: bash
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1w/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
-        7z x openSSL.zip -oopenSSL
-      shell: cmd
-      if: matrix.os == 'windows-2019' || matrix.os == 'windows-2022'
-    - name: Download precompiled openSSL (mac/linux)
+        echo "OpenSSL file: openssl=openSSL-3-5-0-${{ matrix.os }}"
+        echo "openssl=openSSL-3-5-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+        echo "Artifact output: output=qtBase-6-9-0-${{ matrix.os }}"
+        echo "output=qtBase-6-9-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+    - name: Download precompiled openSSL
+      shell: bash
       run: |
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL1.1.1w/${{matrix.OPEN_SSL_FILE}} -o openSSL.zip
-        unzip -qa openSSL.zip -d openSSL
-      if: matrix.os != 'windows-2019' && matrix.os != 'windows-2022'
+        mkdir openSSL
+        cd openSSL
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL3.5.0/${{steps.artifacts.outputs.openssl}}.zip -o openSSL.zip
+        unzip -qa openSSL.zip
+        cd ..
     - name: Download QtBase Sources
       run: |
-        curl -L https://github.com/qt/qtbase/archive/v6.7.2.zip -o QtBase.zip
-        ${{matrix.UNZIP_COMMAND}} QtBase.zip
-        mv qtbase-6.7.2 Qt_build
+        curl -L https://github.com/qt/qtbase/archive/v6.9.0.zip -o QtBase.zip
+        unzip -qa QtBase.zip
+        mv qtbase-6.9.0 Qt_build
     - name: Install Linux Dependencies
+      if: runner.os == 'Linux'
       run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
-      if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
     - name: Build Windows
+      if: runner.os == 'Windows'
+      shell: cmd
       run: |
         cd Qt_build
         mkdir .git
@@ -78,31 +52,27 @@ jobs:
         cmake --build . --parallel 2
         cmake --install .
         cd ..
-        7z a -r ${{matrix.ARTIFACT_NAME}}.zip Qt
-        dir
-      shell: cmd
-      if: matrix.os == 'windows-2019' || matrix.os == 'windows-2022'
+        7z a -r ${{steps.artifacts.outputs.output}}.zip Qt
     - name: Build Mac/Linux
+      if: runner.os != 'Windows'
       run: |
         cd Qt_build
         mkdir .git
-        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}/openSSL/ ${{matrix.CONFIGURE_EXTRA}}
+        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}/openSSL/ ${{matrix.configureExtra}}
         cmake --build . --parallel 2
         cmake --install .
         cd ..
-        zip -r ${{matrix.ARTIFACT_NAME}}.zip Qt
-        ls
-      if: matrix.os != 'windows-2019' && matrix.os != 'windows-2022'
+        zip -r ${{steps.artifacts.outputs.output}}.zip Qt
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ${{matrix.ARTIFACT_NAME}}
-        path: ${{matrix.ARTIFACT_NAME}}.zip
+        name: ${{steps.artifacts.outputs.output}}
+        path: ${{steps.artifacts.outputs.output}}.zip
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: ${{matrix.ARTIFACT_NAME}}.zip
+        files: ${{steps.artifacts.outputs.output}}.zip
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
