@@ -15,24 +15,28 @@ jobs:
       matrix:
         config:
           - os: ubuntu-22.04
-            artifactName: openSSL_3_5_0_ubuntu22
-          - os: ubuntu-24.04
-            artifactName: openSSL_3_5_0_ubuntu24
-          - os: windows-2019
-            artifactName: openSSL_3_5_0_win2019
-          - os: windows-2022
-            artifactName: openSSL_3_5_0_win2022
-          - os: windows-2025
-            artifactName: openSSL_3_5_0_win2025
-          - os: macos-13
-            artifactName: openSSL_3_5_0_mac13
-          - os: macos-14
-            artifactName: openSSL_3_5_0_mac14
-          - os: macos-15
-            artifactName: openSSL_3_5_0_mac15
+          # - os: ubuntu-24.04
+          #   artifactName: openSSL_3_5_0_ubuntu24
+          # - os: windows-2019
+          #   artifactName: openSSL_3_5_0_win2019
+          # - os: windows-2022
+          #   artifactName: openSSL_3_5_0_win2022
+          # - os: windows-2025
+          #   artifactName: openSSL_3_5_0_win2025
+          # - os: macos-13
+          #   artifactName: openSSL_3_5_0_mac13
+          # - os: macos-14
+          #   artifactName: openSSL_3_5_0_mac14
+          # - os: macos-15
+          #   artifactName: openSSL_3_5_0_mac15
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: ilammy/setup-nasm@v1
+      - name: Set artifact name
+        id: artifact
+        run: |
+          echo "Artifact name: name=openSSL-3-5-0-${{ matrix.config.os }}"
+          echo "name=openSSL-3-5-0-${{ matrix.config.os }}" >> "$GITHUB_OUTPUT"
       - name: Download sources
         run: |
           curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
@@ -91,21 +95,21 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.config.artifactName}}
+          name: ${{steps.artifact.outputs.name}}
           path: artifact
       - name: Zip files
         run: |
           cd artifact
           if [ ${{ runner.os }} == 'Windows' ]; then
-            7z a -r ../${{matrix.config.artifactName}}.zip *
+            7z a -r ../${{steps.artifact.outputs.name}}.zip *
           else
-            zip -r ../${{matrix.config.artifactName}}.zip *
+            zip -r ../${{steps.artifact.outputs.name}}.zip *
           fi
       - name: Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: ${{matrix.config.artifactName}}.zip
+          files: ${{steps.artifact.outputs.name}}.zip
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
