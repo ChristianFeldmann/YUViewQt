@@ -24,10 +24,10 @@ jobs:
           #   unzipCommand: unzip -qa
           #   artifactName: qtBase_6.9.0_ubuntu22
           #   configureExtra: -DFEATURE_system_xcb_xinput=OFF
-          - os: windows-2019
-            openSSLFile: openSSL_3_5_0_win2019.zip
+          - os: windows-2022
+            openSSLFile: openSSL_3_5_0_win2022.zip
             unzipCommand: 7z x
-            artifactName: qtBase_6.9.0_win2019
+            artifactName: qtBase_6.9.0_win2022
           # - os: windows-2022
           #   openSSLFile: openSSL_1_1_1w_win2022.zip
           #   unzipCommand: 7z x
