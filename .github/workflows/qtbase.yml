@@ -10,10 +10,12 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        config:
+        #os: [ubuntu-22.04, ubuntu-24.04, windows-2019, windows-2022, windows-2025, macos-13, macos-14, macos-15]
+        os: [ubuntu-22.04]
+        #config:
           # - os: ubuntu-22.04
           #   openSSLFile: openSSL_3_5_0_ubuntu22.zip
           #   unzipCommand: unzip -qa
@@ -24,10 +26,10 @@ jobs:
           #   unzipCommand: unzip -qa
           #   artifactName: qtBase_6.9.0_ubuntu22
           #   configureExtra: -DFEATURE_system_xcb_xinput=OFF
-          - os: windows-2022
-            openSSLFile: openSSL_3_5_0_win2022.zip
-            unzipCommand: 7z x
-            artifactName: qtBase_6.9.0_win2022
+          # - os: windows-2022
+          #   openSSLFile: openSSL_3_5_0_win2022.zip
+          #   unzipCommand: 7z x
+          #   artifactName: qtBase_6.9.0_win2022
           # - os: windows-2022
           #   openSSLFile: openSSL_1_1_1w_win2022.zip
           #   unzipCommand: 7z x
@@ -46,22 +48,33 @@ jobs:
     steps:
     - uses: aseprite/get-ninja@main
     - uses: ilammy/msvc-dev-cmd@v1
+    - name: Set artifact name
+      id: artifacts
+      shell: bash
+      run: |
+        echo "OpenSSL file: openssl=openSSL-3-5-0-${{ matrix.os }}"
+        echo "openssl=openSSL-3-5-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+        echo "Artifact name: name=qtBase-6-9-0-${{ matrix.os }}"
+        echo "name=qtBase-6-9-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
     - name: Download precompiled openSSL
+      shell: bash
       run: |
         mkdir openSSL
         cd openSSL
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL3.5/${{matrix.config.openSSLFile}} -o openSSL.zip
-        ${{matrix.config.unzipCommand}} openSSL.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL3.5/${{steps.artifacts.outputs.openssl}} -o openSSL.zip
+        unzip -qa openSSL.zip
         cd ..
     - name: Download QtBase Sources
       run: |
         curl -L https://github.com/qt/qtbase/archive/v6.9.0.zip -o QtBase.zip
-        ${{matrix.config.unzipCommand}} QtBase.zip
+        unzip -qa QtBase.zip
         mv qtbase-6.9.0 Qt_build
     - name: Install Linux Dependencies
-      run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
       if: runner.os == 'Linux'
+      run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
     - name: Build Windows
+      if: runner.os == 'Windows'
+      shell: cmd
       run: |
         cd Qt_build
         mkdir .git
@@ -69,11 +82,10 @@ jobs:
         cmake --build . --parallel 2
         cmake --install .
         cd ..
-        7z a -r ${{matrix.config.artifactName}}.zip Qt
+        7z a -r ${{steps.artifacts.outputs.artifact}}.zip Qt
         dir
-      shell: cmd
-      if: runner.os == 'Windows'
     - name: Build Mac/Linux
+      if: runner.os != 'Windows'
       run: |
         cd Qt_build
         mkdir .git
@@ -81,19 +93,18 @@ jobs:
         cmake --build . --parallel 2
         cmake --install .
         cd ..
-        zip -r ${{matrix.config.artifactName}}.zip Qt
+        zip -r ${{steps.artifacts.outputs.artifact}}.zip Qt
         ls
-      if: runner.os != 'Windows'
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ${{matrix.config.artifactName}}
-        path: ${{matrix.config.artifactName}}.zip
+        name: ${{steps.artifacts.outputs.artifact}}
+        path: ${{steps.artifacts.outputs.artifact}}.zip
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: ${{matrix.config.artifactName}}.zip
+        files: ${{steps.artifacts.outputs.artifact}}.zip
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
