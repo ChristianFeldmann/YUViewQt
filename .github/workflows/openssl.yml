@@ -18,33 +18,45 @@ jobs:
             artifactName: openSSL_3_5_0_ubuntu22
             unzipCommand: unzip -qa
             zipCommand: zip -r
-          - os: ubuntu-24.04
-            artifactName: openSSL_3_5_0_ubuntu24
-            unzipCommand: unzip -qa
-            zipCommand: zip -r
-          - os: windows-2019
-            artifactName: openSSL_3_5_0_win2019
-            unzipCommand: 7z x
-            zipCommand: 7z a -r
-          - os: windows-2025
-            artifactName: openSSL_3_5_0_win2025
-            unzipCommand: 7z x
-            zipCommand: 7z a -r
-          - os: macos-13
-            artifactName: openSSL_3_5_0_mac13
-            unzipCommand: unzip -qa
-            zipCommand: zip -r
-          - os: macos-15
-            artifactName: openSSL_3_5_0_mac15
-            unzipCommand: unzip -qa
-            zipCommand: zip -r
+          # - os: ubuntu-24.04
+          #   artifactName: openSSL_3_5_0_ubuntu24
+          #   unzipCommand: unzip -qa
+          #   zipCommand: zip -r
+          # - os: windows-2019
+          #   artifactName: openSSL_3_5_0_win2019
+          #   unzipCommand: 7z x
+          #   zipCommand: 7z a -r
+          # - os: windows-2022
+          #   artifactName: openSSL_3_5_0_win2022
+          #   unzipCommand: 7z x
+          #   zipCommand: 7z a -r
+          # - os: windows-2025
+          #   artifactName: openSSL_3_5_0_win2025
+          #   unzipCommand: 7z x
+          #   zipCommand: 7z a -r
+          # - os: macos-13
+          #   artifactName: openSSL_3_5_0_mac13
+          #   unzipCommand: unzip -qa
+          #   zipCommand: zip -r
+          # - os: macos-14
+          #   artifactName: openSSL_3_5_0_mac14
+          #   unzipCommand: unzip -qa
+          #   zipCommand: zip -r
+          # - os: macos-15
+          #   artifactName: openSSL_3_5_0_mac15
+          #   unzipCommand: unzip -qa
+          #   zipCommand: zip -r
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: ilammy/setup-nasm@v1
       - name: Download sources
         run: |
           curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
-          ${{matrix.config.unzipCommand}} openSSL.zip
+          if [ ${{ runner.os }} == 'Windows' ]; then
+            7z x openSSL.zip
+          else
+            zip -r openSSL.zip
+          fi
           mv openssl-openssl-3.5.0 openSSL
       - name: Install perl for windows build
         run: |
