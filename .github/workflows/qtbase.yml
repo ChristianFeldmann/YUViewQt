@@ -55,7 +55,7 @@ jobs:
         echo "OpenSSL file: openssl=openSSL-3-5-0-${{ matrix.os }}"
         echo "openssl=openSSL-3-5-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
         echo "Artifact output: output=qtBase-6-9-0-${{ matrix.os }}"
-        echo "name=qtBase-6-9-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+        echo "output=qtBase-6-9-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
     - name: Download precompiled openSSL
       shell: bash
       run: |
