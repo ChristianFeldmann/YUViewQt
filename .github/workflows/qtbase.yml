@@ -61,7 +61,7 @@ jobs:
       run: |
         mkdir openSSL
         cd openSSL
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL3.5.0/${{steps.artifacts.outputs.openssl}} -o openSSL.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL3.5.0/${{steps.artifacts.outputs.openssl}}.zip -o openSSL.zip
         unzip -qa openSSL.zip
         cd ..
     - name: Download QtBase Sources
