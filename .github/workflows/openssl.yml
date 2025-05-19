@@ -10,43 +10,34 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        config:
-          - os: ubuntu-22.04
-            artifactName: openSSL_3_5_0_ubuntu22
-            unzipCommand: unzip -qa
-            zipCommand: zip -r
-          - os: ubuntu-24.04
-            artifactName: openSSL_3_5_0_ubuntu24
-            unzipCommand: unzip -qa
-            zipCommand: zip -r
-          - os: windows-2019
-            artifactName: openSSL_3_5_0_win2019
-            unzipCommand: 7z x
-            zipCommand: 7z a -r
-          - os: windows-2025
-            artifactName: openSSL_3_5_0_win2025
-            unzipCommand: 7z x
-            zipCommand: 7z a -r
-          - os: macos-13
-            artifactName: openSSL_3_5_0_mac13
-            unzipCommand: unzip -qa
-            zipCommand: zip -r
-          - os: macos-15
-            artifactName: openSSL_3_5_0_mac15
-            unzipCommand: unzip -qa
-            zipCommand: zip -r
+        os: [ubuntu-22.04, ubuntu-24.04, windows-2019, windows-2022, windows-2025, macos-13, macos-14, macos-15]
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: ilammy/setup-nasm@v1
-      - name: Download sources
+      - name: Set artifact name
+        id: artifact
+        shell: bash
         run: |
-          curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
-          ${{matrix.config.unzipCommand}} openSSL.zip
+          echo "Artifact name: name=openSSL-3-5-0-${{ matrix.os }}"
+          echo "name=openSSL-3-5-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+      - name: Download sources
+        run: curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
+      - name: Unzip sources (Windows)
+        if: runner.os	== 'Windows'
+        run: |
+          7z x openSSL.zip
+          mv openssl-openssl-3.5.0 openSSL
+      - name: Unzip sources (Windows)
+        if: runner.os	!= 'Windows'
+        run: |
+          unzip -qa openSSL.zip
           mv openssl-openssl-3.5.0 openSSL
       - name: Install perl for windows build
+        if: runner.os	== 'Windows'
+        shell: cmd
         run: |
           choco install strawberryperl
           perl --version
@@ -54,15 +45,14 @@ jobs:
           set CC_FOR_BUILD=
           set CXX=
           set CXX_FOR_BUILD=
-        shell: cmd
-        if: runner.os	== 'Windows'
       - name: Build Windows
+        if: runner.os	== 'Windows'
+        shell: cmd
         run: |
           cd openSSL
           set PATH=%PATH%;"C:\Program Files\NASM"
           C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
           nmake
-          dir
           cd ..
           mkdir artifact
           robocopy openSSL\include artifact\include /e
@@ -70,23 +60,19 @@ jobs:
           copy openSSL\libcrypto.lib artifact
           copy openSSL\libssl-3-x64.dll artifact
           copy openSSL\libssl.lib artifact
-        shell: cmd
-        if: runner.os	== 'Windows'
       - name: Build Mac
+        if: runner.os	== 'macOS'
         run: |
           mkdir dist
           cd openSSL
-          pwd
-          ls
           ./Configure --prefix=$PWD/dist shared
           make -j 2
-          ls
           cd ..
           mkdir artifact
           cp -R openSSL/include artifact
           cp openSSL/libcrypto.3.dylib openSSL/libcrypto.a openSSL/libcrypto.dylib openSSL/libssl.3.dylib openSSL/libssl.a openSSL/libssl.dylib artifact
-        if: runner.os	== 'macOS'
       - name: Build Linux
+        if: runner.os	== 'Linux'
         run: |
           cd openSSL
           ./Configure shared
@@ -95,22 +81,25 @@ jobs:
           mkdir artifact
           cp -R openSSL/include artifact
           cp openSSL/libcrypto.* openSSL/libssl.* artifact
-        if: runner.os	== 'Linux'
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.config.artifactName}}
+          name: ${{steps.artifact.outputs.name}}
           path: artifact
       - name: Zip files
+        shell: bash
         run: |
           cd artifact
-          ${{matrix.config.zipCommand}} ../${{matrix.config.artifactName}}.zip *
-          cd ..
+          if [ ${{ runner.os }} == 'Windows' ]; then
+            7z a -r ../${{steps.artifact.outputs.name}}.zip *
+          else
+            zip -r ../${{steps.artifact.outputs.name}}.zip *
+          fi
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: ${{matrix.config.artifactName}}.zip
+          files: ${{steps.artifact.outputs.name}}.zip
 
   # How to upload files to the release:
   # https://github.com/Blacksmoke16/oq/pull/47/files#diff-082c28d748ad2e3eecc5508d740d9417R9-R29
