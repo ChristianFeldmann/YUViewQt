@@ -13,8 +13,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        #os: [ubuntu-22.04, ubuntu-24.04, windows-2019, windows-2022, windows-2025, macos-13, macos-14, macos-15]
-        os: [macos-13]
+        #os: [ubuntu-22.04, ubuntu-24.04, windows-2022, windows-2025, macos-13, macos-15]
+        os: [windows-2022]
         #config:
           # - os: ubuntu-22.04
           #   openSSLFile: openSSL_3_5_0_ubuntu22.zip
