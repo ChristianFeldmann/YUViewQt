@@ -48,12 +48,12 @@ jobs:
       shell: cmd
       run: |
         echo ${{ github.workspace }}
-        echo ${{ github.workspace }}\\Qt
-        dir ${{ github.workspace }}\\Qt
-        dir ${{ github.workspace }}\\openSSL
+        echo ${{ github.workspace }}\Qt
+        dir ${{ github.workspace }}\Qt
+        dir ${{ github.workspace }}\openSSL
         cd Qt_build
         mkdir .git
-        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}\\Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}\\openSSL -DFEATURE_sql=OFF
+        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${{ github.workspace }}\openSSL -DFEATURE_sql=OFF
         cmake --build . --parallel 2
         cmake --install .
         cd ..
