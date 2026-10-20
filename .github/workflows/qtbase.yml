@@ -32,7 +32,6 @@ jobs:
       run: |
         mkdir openSSL
         cd openSSL
-        pwd
         curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL3.6.5/${{steps.artifacts.outputs.openssl}}.zip -o openSSL.zip
         unzip -qa openSSL.zip
         cd ..
@@ -48,9 +47,10 @@ jobs:
       if: runner.os == 'Windows'
       shell: cmd
       run: |
-        echo ${GITHUB_WORKSPACE}\\Qt
-        dir ${GITHUB_WORKSPACE}\\Qt
-        dir ${GITHUB_WORKSPACE}\\openSSL
+        echo ${{ github.workspace }}
+        echo ${{ github.workspace }}\\Qt
+        dir ${{ github.workspace }}\\Qt
+        dir ${{ github.workspace }}\\openSSL
         cd Qt_build
         mkdir .git
         cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}\\Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}\\openSSL -DFEATURE_sql=OFF
