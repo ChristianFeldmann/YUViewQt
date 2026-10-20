@@ -22,23 +22,23 @@ jobs:
       id: artifacts
       shell: bash
       run: |
-        echo "OpenSSL file: openssl=openSSL-3-5-0-${{ matrix.os }}"
-        echo "openssl=openSSL-3-5-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
-        echo "Artifact output: output=qtBase-6-9-0-${{ matrix.os }}"
-        echo "output=qtBase-6-9-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+        echo "OpenSSL file: openssl=openSSL-3-6-5-${{ matrix.os }}"
+        echo "openssl=openSSL-3-6-5-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+        echo "Artifact output: output=qtBase-6-12-0-${{ matrix.os }}"
+        echo "output=qtBase-6-12-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
     - name: Download precompiled openSSL
       shell: bash
       run: |
         mkdir openSSL
         cd openSSL
-        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL3.5.0/${{steps.artifacts.outputs.openssl}}.zip -o openSSL.zip
+        curl -L https://github.com/ChristianFeldmann/YUViewQt/releases/download/openSSL3.6.5/${{steps.artifacts.outputs.openssl}}.zip -o openSSL.zip
         unzip -qa openSSL.zip
         cd ..
     - name: Download QtBase Sources
       run: |
-        curl -L https://github.com/qt/qtbase/archive/v6.9.0.zip -o QtBase.zip
+        curl -L https://github.com/qt/qtbase/archive/v6.12.0.zip -o QtBase.zip
         unzip -qa QtBase.zip
-        mv qtbase-6.9.0 Qt_build
+        mv qtbase-6.12.0 Qt_build
     - name: Install Linux Dependencies
       if: runner.os == 'Linux'
       run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
@@ -64,12 +64,12 @@ jobs:
         cd ..
         zip -r ${{steps.artifacts.outputs.output}}.zip Qt
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{steps.artifacts.outputs.output}}
         path: ${{steps.artifacts.outputs.output}}.zip
     - name: Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v3
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: ${{steps.artifacts.outputs.output}}.zip
