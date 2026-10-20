@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, windows-2019, windows-2022, windows-2025, macos-13, macos-14, macos-15]
+        os: [ubuntu-24.04, ubuntu-26.04, ubuntu-24.04-arm, ubuntu-26.04-arm, windows-2022, windows-2025-vs2026, windows-11-vs2026-arm, macos-26-intel, macos-26]
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: ilammy/setup-nasm@v1
@@ -21,20 +21,20 @@ jobs:
         id: artifact
         shell: bash
         run: |
-          echo "Artifact name: name=openSSL-3-5-0-${{ matrix.os }}"
-          echo "name=openSSL-3-5-0-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+          echo "Artifact name: name=openSSL-3-6-6-${{ matrix.os }}"
+          echo "name=openSSL-3-6-5-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
       - name: Download sources
-        run: curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.0.zip -o openSSL.zip
+        run: curl -L https://github.com/openssl/openssl/archive/refs/tags/openssl-3.6.5.zip -o openSSL.zip
       - name: Unzip sources (Windows)
         if: runner.os	== 'Windows'
         run: |
           7z x openSSL.zip
-          mv openssl-openssl-3.5.0 openSSL
+          mv openssl-openssl-3.6.5 openSSL
       - name: Unzip sources (Windows)
         if: runner.os	!= 'Windows'
         run: |
           unzip -qa openSSL.zip
-          mv openssl-openssl-3.5.0 openSSL
+          mv openssl-openssl-3.6.5 openSSL
       - name: Install perl for windows build
         if: runner.os	== 'Windows'
         shell: cmd
