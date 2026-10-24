@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
-          arch: ${{ matrix.arch }}
+          arch: ${{ contains(matrix.os, 'arm') && 'arm64' || 'x64' }}
       - uses: ilammy/setup-nasm@v1
       - name: Set artifact name
         id: artifact
