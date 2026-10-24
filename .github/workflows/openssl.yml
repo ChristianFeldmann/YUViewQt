@@ -16,6 +16,8 @@ jobs:
         os: [ubuntu-24.04, ubuntu-26.04, ubuntu-24.04-arm, ubuntu-26.04-arm, windows-2022, windows-2025-vs2026, windows-11-vs2026-arm, macos-26-intel, macos-26]
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
       - uses: ilammy/setup-nasm@v1
       - name: Set artifact name
         id: artifact
