@@ -62,9 +62,14 @@ jobs:
           cd ..
           mkdir artifact
           robocopy openSSL\include artifact\include /e
-          copy openSSL\libcrypto-3-x64.dll artifact
+          if /I "%RUNNER_ARCH%"=="ARM64" (
+            copy openSSL\libcrypto-3-arm64.dll artifact
+            copy openSSL\libssl-3-arm64.dll artifact
+          ) else (
+            copy openSSL\libcrypto-3-x64.dll artifact
+            copy openSSL\libssl-3-x64.dll artifact
+          )
           copy openSSL\libcrypto.lib artifact
-          copy openSSL\libssl-3-x64.dll artifact
           copy openSSL\libssl.lib artifact
       - name: Build Mac
         if: runner.os	== 'macOS'
