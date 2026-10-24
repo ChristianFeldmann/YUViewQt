@@ -16,6 +16,8 @@ jobs:
         os: [ubuntu-24.04, ubuntu-26.04, ubuntu-24.04-arm, ubuntu-26.04-arm, windows-2022, windows-2025-vs2026, windows-11-vs2026-arm, macos-26-intel, macos-26]
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ contains(matrix.os, 'arm') && 'arm64' || 'x64' }}
       - uses: ilammy/setup-nasm@v1
       - name: Set artifact name
         id: artifact
@@ -51,14 +53,23 @@ jobs:
         run: |
           cd openSSL
           set PATH=%PATH%;"C:\Program Files\NASM"
-          C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
+          if /I "%RUNNER_ARCH%"=="ARM64" (
+            C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64-ARM
+          ) else (
+            C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
+          )
           nmake
           cd ..
           mkdir artifact
           robocopy openSSL\include artifact\include /e
-          copy openSSL\libcrypto-3-x64.dll artifact
+          if /I "%RUNNER_ARCH%"=="ARM64" (
+            copy openSSL\libcrypto-3-arm64.dll artifact
+            copy openSSL\libssl-3-arm64.dll artifact
+          ) else (
+            copy openSSL\libcrypto-3-x64.dll artifact
+            copy openSSL\libssl-3-x64.dll artifact
+          )
           copy openSSL\libcrypto.lib artifact
-          copy openSSL\libssl-3-x64.dll artifact
           copy openSSL\libssl.lib artifact
       - name: Build Mac
         if: runner.os	== 'macOS'
@@ -96,7 +107,7 @@ jobs:
             zip -r ../${{steps.artifact.outputs.name}}.zip *
           fi
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: ${{steps.artifact.outputs.name}}.zip
