@@ -53,12 +53,11 @@ jobs:
         run: |
           cd openSSL
           set PATH=%PATH%;"C:\Program Files\NASM"
-          if [ "${{ runner.arch }}" = "ARM64" ]; then
-            config_arch=VC-WIN64-ARM
-          else
-            config_arch=VC-WIN64A
-          fi
-          C:\Strawberry\perl\bin\perl.exe Configure "${config_arch}"
+          if /I "%RUNNER_ARCH%"=="ARM64" (
+            C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64-ARM
+          ) else (
+            C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
+          )
           nmake
           cd ..
           mkdir artifact
