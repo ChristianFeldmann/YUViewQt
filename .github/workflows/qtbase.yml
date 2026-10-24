@@ -18,6 +18,8 @@ jobs:
     steps:
     - uses: aseprite/get-ninja@main
     - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ contains(matrix.os, 'arm') && 'arm64' || 'x64' }}
     - name: Set artifact name
       id: artifacts
       shell: bash
@@ -49,7 +51,7 @@ jobs:
         cd Qt_build
         mkdir .git
         cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}\Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_opengl=dynamic -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${{ github.workspace }}\openSSL -DFEATURE_sql=OFF
-        cmake --build . --parallel 2
+        cmake --build . --parallel 4
         cmake --install .
         cd ..
         7z a -r ${{steps.artifacts.outputs.output}}.zip Qt
@@ -59,7 +61,7 @@ jobs:
         cd Qt_build
         mkdir .git
         cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}/openSSL/ ${{matrix.configureExtra}}
-        cmake --build . --parallel 2
+        cmake --build . --parallel 4
         cmake --install .
         cd ..
         zip -r ${{steps.artifacts.outputs.output}}.zip Qt
