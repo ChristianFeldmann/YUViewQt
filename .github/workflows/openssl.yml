@@ -58,7 +58,7 @@ jobs:
           else
             config_arch=VC-WIN64A
           fi
-          C:\Strawberry\perl\bin\perl.exe Configure ${config_arch}
+          C:\Strawberry\perl\bin\perl.exe Configure "${config_arch}"
           nmake
           cd ..
           mkdir artifact
