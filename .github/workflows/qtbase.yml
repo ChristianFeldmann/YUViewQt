@@ -43,7 +43,7 @@ jobs:
         mv qtbase-6.12.0 Qt_build
     - name: Install Linux Dependencies
       if: runner.os == 'Linux'
-      run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build
+      run: sudo apt install build-essential '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libatspi2.0-dev ninja-build libfontconfig1-dev libfreetype-dev
     - name: Build Windows
       if: runner.os == 'Windows'
       shell: cmd
@@ -55,12 +55,15 @@ jobs:
         cmake --install .
         cd ..
         7z a -r ${{steps.artifacts.outputs.output}}.zip Qt
-    - name: Build Mac/Linux
+    - name: Build Linux/Macos
       if: runner.os != 'Windows'
+      env:
+        EXTRA_CONFIG_ARGUMENTS: ${{ case(runner.os == 'Linux', '-DFEATURE_freetype=ON -DFEATURE_system_freetype=ON -DFEATURE_fontconfig=ON', '') }}
       run: |
         cd Qt_build
         mkdir .git
-        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}/openSSL/ ${{matrix.configureExtra}}
+        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}/openSSL/ $EXTRA_CONFIG_ARGUMENTS
+        cat config.summary
         cmake --build . --parallel 4
         cmake --install .
         cd ..
