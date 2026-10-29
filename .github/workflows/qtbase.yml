@@ -55,23 +55,14 @@ jobs:
         cmake --install .
         cd ..
         7z a -r ${{steps.artifacts.outputs.output}}.zip Qt
-    - name: Build Linux
-      if: runner.os == 'Linux'
+    - name: Build Linux/Macos
+      if: runner.os != 'Windows'
+      env:
+        EXTRA_CONFIG_ARGUMENTS: ${{ case(runner.os == 'Linux', '-DFEATURE_freetype=ON -DFEATURE_system_freetype=ON -DFEATURE_fontconfig=ON', '') }}
       run: |
         cd Qt_build
         mkdir .git
-        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}/openSSL/ -DFEATURE_freetype=ON -DFEATURE_system_freetype=ON -DFEATURE_fontconfig=ON
-        cat config.summary
-        cmake --build . --parallel 4
-        cmake --install .
-        cd ..
-        zip -r ${{steps.artifacts.outputs.output}}.zip Qt
-    - name: Build Mac
-      if: runner.os == 'macOS'
-      run: |
-        cd Qt_build
-        mkdir .git
-        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}/openSSL/
+        cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/Qt -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF -DINPUT_openssl=runtime -DOPENSSL_ROOT_DIR=${GITHUB_WORKSPACE}/openSSL/ $EXTRA_CONFIG_ARGUMENTS
         cat config.summary
         cmake --build . --parallel 4
         cmake --install .
